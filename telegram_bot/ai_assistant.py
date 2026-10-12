@@ -321,3 +321,179 @@ class TeaAdvisorService:
                 )
 
         return "\n\n".join(lines)
+
+    def generate_clinical_analysis(
+        self,
+        entries: List[BitacoraEntry],
+        child_name: str = "tu peque",
+        latest_bambi: Optional[dict] = None,
+    ) -> str:
+        """
+        Analiza todos los registros acumulados en la bitácora (y el puntaje BAMBI si existe)
+        para detectar patrones sensoriales, emocionales y entregar un Plan de Apoyos e Indicaciones.
+        """
+        if not entries:
+            return (
+                f"🧠 **Análisis Clínico-Sensorial de {child_name}**\n\n"
+                "Aún no hay registros suficientes en la bitácora para detectar patrones.\n"
+                "👉 Escríbeme primero un par de mensajes contándome qué alimentos ha tolerado, tocado, probado o rechazado hoy."
+            )
+
+        deterministic_report = self._generate_deterministic_analysis(entries, child_name, latest_bambi)
+
+        if self.api_key:
+            try:
+                history_lines = "\n".join(
+                    [
+                        f"- [{e.created_at}] Alimento: {e.food_item} | Escalón: {e.sensory_step} | Textura: {e.texture_notes} | Estado: {e.mood_state} | Nota: {e.raw_notes}"
+                        for e in entries[:30]
+                    ]
+                )
+                bambi_ctx = (
+                    f"Último puntaje BAMBI registrado: Total={latest_bambi['total_score']}/90 "
+                    f"(Rechazo={latest_bambi.get('refusal_score', 0)}, Selectividad={latest_bambi.get('selectivity_score', 0)}, Disruptivo={latest_bambi.get('disruptive_score', 0)})"
+                    if latest_bambi
+                    else "Sin cuestionario BAMBI registrado aún."
+                )
+                prompt = (
+                    f"Actúa como el sistema de análisis clínico del TFM de la Mtra. Maria Cindy Morales Alarcón.\n"
+                    f"Analiza el historial de bitácora de {child_name} ({len(entries)} registros) y su contexto BAMBI ({bambi_ctx}).\n\n"
+                    f"HISTORIAL DE BITÁCORA:\n{history_lines}\n\n"
+                    f"RESUMEN ESTADÍSTICO BASE:\n{deterministic_report}\n\n"
+                    "Genera un informe estructurado, cálido y accionable con:\n"
+                    "1. 🔍 Patrones Sensoriales y de Textura detectados (qué acepta mejor vs qué detona rechazo).\n"
+                    "2. 📊 Cruce con las 3 dimensiones del BAMBI (Rechazo, Selectividad, Conducta en mesa).\n"
+                    "3. 🌉 Propuesta concreta de Alimentos Puente (Food Chaining) a partir de los alimentos que sí ha tolerado/comido.\n"
+                    "4. 🛠️ 3 Indicaciones o Apoyos prácticos para aplicar esta semana en casa y comedor escolar."
+                )
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model_name}:generateContent?key={self.api_key}"
+                payload = {
+                    "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+                    "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                    "generationConfig": {"temperature": 0.35, "maxOutputTokens": 900},
+                }
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=18) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts and "text" in parts[0]:
+                            return parts[0]["text"].strip()
+            except Exception:
+                pass
+
+        return deterministic_report
+
+    def _generate_deterministic_analysis(
+        self,
+        entries: List[BitacoraEntry],
+        child_name: str,
+        latest_bambi: Optional[dict] = None,
+    ) -> str:
+        total = len(entries)
+        accepted_foods = []
+        explored_foods = []
+        rejected_foods = []
+        accepted_textures: dict[str, int] = {}
+        rejected_textures: dict[str, int] = {}
+        stress_episodes = 0
+        calm_episodes = 0
+
+        for e in entries:
+            tex = e.texture_notes if e.texture_notes and e.texture_notes != "Estándar" else ""
+            if e.sensory_step in ("Comió", "Probó"):
+                if e.food_item not in accepted_foods:
+                    accepted_foods.append(e.food_item)
+                if tex:
+                    accepted_textures[tex] = accepted_textures.get(tex, 0) + 1
+            elif e.sensory_step in ("Toleró presencia", "Olió", "Tocó", "Acercó a la boca"):
+                if e.food_item not in explored_foods:
+                    explored_foods.append(e.food_item)
+                if tex:
+                    accepted_textures[tex] = accepted_textures.get(tex, 0) + 1
+            elif e.sensory_step == "Rechazó":
+                if e.food_item not in rejected_foods:
+                    rejected_foods.append(e.food_item)
+                if tex:
+                    rejected_textures[tex] = rejected_textures.get(tex, 0) + 1
+
+            if e.mood_state in ("Ansioso", "Sobrecargado"):
+                stress_episodes += 1
+            elif e.mood_state in ("En calma", "Curioso"):
+                calm_episodes += 1
+
+        rejection_rate = (len([e for e in entries if e.sensory_step == "Rechazó"]) / total) * 100
+
+        lines = [
+            f"🧠 **Informe de Análisis Clínico-Sensorial y Plan de Apoyos para {child_name}**",
+            f"*Basado en {total} registros de su bitácora y la evidencia del TFM (Mtra. Cindy Morales Alarcón)*\n",
+        ]
+
+        if latest_bambi:
+            b_score = latest_bambi["total_score"]
+            status_str = "Clínicamente significativo (≥ 34 ptos)" if b_score >= 34 else "Leve/Moderado (< 34 ptos)"
+            lines.append(
+                f"📋 **Línea Base BAMBI Registrada:** **{b_score} / 90 ptos** — *{status_str}*"
+            )
+
+        # 1. Patrones detectados
+        lines.append("🔍 **1. Patrones Sensoriales Detectados:**")
+        if accepted_foods:
+            lines.append(f"• **Alimentos con mayor aceptación/éxito:** {', '.join(accepted_foods[:6])}")
+        if explored_foods:
+            lines.append(f"• **En fase de aproximación sensorial (tolerar/tocar/oler):** {', '.join(explored_foods[:6])}")
+        if rejected_foods:
+            lines.append(f"• **Alimentos que activan rechazo o defensa sensorial:** {', '.join(rejected_foods[:6])}")
+
+        if accepted_textures:
+            best_tex = sorted(accepted_textures.items(), key=lambda x: x[1], reverse=True)[0][0]
+            lines.append(f"• **Textura mejor tolerada:** *{best_tex}* (vía de seguridad perceptiva).")
+        if rejected_textures:
+            worst_tex = sorted(rejected_textures.items(), key=lambda x: x[1], reverse=True)[0][0]
+            lines.append(f"• **Textura de mayor desafío:** *{worst_tex}* (posible hiperreactividad táctil intraoral).")
+
+        lines.append(
+            f"• **Balance emocional en la mesa:** {calm_episodes} experiencias en calma/curiosidad vs {stress_episodes} episodios de ansiedad/sobrecarga."
+        )
+
+        # 2. Indicaciones y Apoyos personalizados
+        lines.append("\n🛠️ **2. Indicaciones y Apoyos Personalizados (Plan de Acción):**")
+
+        if accepted_foods or explored_foods:
+            base_food = (accepted_foods + explored_foods)[0]
+            lines.append(
+                f"1️⃣ **Estrategia de Alimento Puente (Food Chaining):** Toma como ancla *{base_food}* y ofrece la próxima semana una variante que conserve la misma forma, color o temperatura, cambiando solo un 10% la preparación."
+            )
+        else:
+            lines.append(
+                "1️⃣ **Construcción de Seguridad Visual:** Utiliza un «plato de aprendizaje» separado del plato principal donde el alimento nuevo solo esté presente en la mesa sin ninguna exigencia de tocarlo ni comerlo."
+            )
+
+        if rejection_rate >= 40 or stress_episodes > calm_episodes:
+            lines.append(
+                "2️⃣ **Reducción de Alerta Sensorial (Prioridad Alta):** Se observa una tasa elevada de rechazo o estrés en la mesa. Implementa **10-15 minutos de regulación propioceptiva** antes de comer (presión profunda, saltar suaves, abrazos firmes) y limita la duración en la mesa a máximo 20-25 minutos con cero coacción."
+            )
+        else:
+            lines.append(
+                "2️⃣ **Avance en la Escalera Sensorial (Steps to Eating):** Dado que hay buena regulación en calma, invita a jugar con los alimentos en exploración (tocar con tenedor, oler o dar un «besito» al alimento) celebrando cada micro-paso."
+            )
+
+        if rejected_foods:
+            lines.append(
+                f"3️⃣ **Ajuste para {', '.join(rejected_foods[:2])}:** No los retires definitivamente ni obligues a probarlos; preséntalos en trozos muy pequeños, separados visualmente de su alimento seguro y sin salsas ni mezclas."
+            )
+        else:
+            lines.append(
+                "3️⃣ **Coordinación Familia–Escuela:** Comparte tu archivo `/exportar` con el comedor escolar o su terapeuta ocupacional para mantener exactamente los mismos apoyos visuales y utensilios."
+            )
+
+        lines.append(
+            "\n💡 *Tip: También puedes guardar tu puntaje del cuestionario BAMBI escribiendo `/registrar_bambi <puntaje>` (ej. `/registrar_bambi 42`).*"
+        )
+        return "\n".join(lines)

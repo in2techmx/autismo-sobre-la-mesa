@@ -69,6 +69,21 @@ class BitacoraRepository:
                 )
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS bambi_assessments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    total_score INTEGER NOT NULL,
+                    refusal_score INTEGER DEFAULT 0,
+                    selectivity_score INTEGER DEFAULT 0,
+                    disruptive_score INTEGER DEFAULT 0,
+                    notes TEXT DEFAULT '',
+                    created_at TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES user_profiles(user_id)
+                )
+                """
+            )
             conn.commit()
 
     def upsert_profile(
@@ -207,6 +222,47 @@ class BitacoraRepository:
                 )
                 for row in rows
             ]
+
+    def add_bambi_score(
+        self,
+        user_id: int,
+        total_score: int,
+        refusal_score: int = 0,
+        selectivity_score: int = 0,
+        disruptive_score: int = 0,
+        notes: str = "",
+    ) -> dict:
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+        with closing(self._get_connection()) as conn:
+            conn.execute(
+                """
+                INSERT INTO bambi_assessments (
+                    user_id, total_score, refusal_score, selectivity_score, disruptive_score, notes, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (user_id, total_score, refusal_score, selectivity_score, disruptive_score, notes, now),
+            )
+            conn.commit()
+        return self.get_latest_bambi_score(user_id) or {}
+
+    def get_latest_bambi_score(self, user_id: int) -> Optional[dict]:
+        with closing(self._get_connection()) as conn:
+            cur = conn.execute(
+                """
+                SELECT * FROM bambi_assessments
+                WHERE user_id = ?
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (user_id,),
+            )
+            row = cur.fetchone()
+            if not row:
+                return None
+            data = dict(row)
+            data["clinical_flag"] = data["total_score"] >= 34
+            return data
 
     def get_summary_stats(self, user_id: int) -> dict:
         entries = self.get_recent_entries(user_id, limit=100)

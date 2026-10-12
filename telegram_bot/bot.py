@@ -47,6 +47,9 @@ advisor = TeaAdvisorService()
 def get_main_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [
+            InlineKeyboardButton("🧠 Analizar y Dar Apoyos", callback_data="ver_analisis"),
+        ],
+        [
             InlineKeyboardButton("📒 Ver mi Bitácora", callback_data="ver_bitacora"),
             InlineKeyboardButton("📊 Exportar Excel/CSV", callback_data="exportar_csv"),
         ],
@@ -78,11 +81,15 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         "1️⃣ **Llevar tu Bitácora por mensaje libre:** Solo escríbeme como a un amigo, por ejemplo:\n"
         "   • *\"Hoy en la comida toleró el brócoli en el plato y lo tocó con el tenedor, estuvo tranquilo\"*\n"
         "   • *\"Hoy rechazó el puré de papa porque tenía grumos\"*\n\n"
-        "2️⃣ **Resolver tus dudas sobre TEA y alimentación:** Pregúntame lo que necesites:\n"
+        "2️⃣ **Analizar tus registros con IA y darte Indicaciones/Apoyos:**\n"
+        "   • Usa `/analisis` (o el botón **🧠 Analizar y Dar Apoyos**) para que cruce tu historial de comidas y tu puntaje BAMBI y te dé estrategias personalizadas de *Alimento Puente*, *Regulación Sensorial* y *Ajustes en Mesa*.\n\n"
+        "3️⃣ **Resolver tus dudas sobre TEA y alimentación:** Pregúntame lo que necesites:\n"
         "   • *\"¿Cómo aplico el alimento puente si solo come nuggets?\"*\n"
         "   • *\"¿Por qué le dan arcadas los olores fuertes?\"*\n\n"
         "📌 **Comandos rápidos:**\n"
         f"• `/peque Nombre` — Cambia el nombre de tu peque (actual: **{child_name}**)\n"
+        "• `/analisis` — **Diagnóstico de patrones e indicaciones personalizadas de apoyo**\n"
+        "• `/registrar_bambi 42` — Guarda tu puntaje del cuestionario BAMBI en tu expediente\n"
         "• `/bitacora` — Resumen de avances registrados\n"
         "• `/exportar` — Descarga tu bitácora en Excel/CSV para llevarla a consulta\n"
         "• `/bambi` — Guía e interpretación del Cuestionario BAMBI\n"
@@ -148,9 +155,88 @@ async def bitacora_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             f"(Textura: {e.texture_notes} | Estado: {e.mood_state})"
         )
 
-    lines.append("\n💡 Usa `/exportar` cuando quieras descargar el archivo completo para su especialista.")
+    lines.append("\n💡 Usa `/analisis` para recibir indicaciones de apoyo o `/exportar` para descargar en Excel.")
     await message.reply_text(
         "\n".join(lines),
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=get_main_keyboard(),
+    )
+
+
+async def analisis_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    message = update.effective_message
+    if not user or not message:
+        return
+
+    profile = repo.get_profile(user.id)
+    child_name = profile["child_name"]
+    entries = repo.get_recent_entries(user.id, limit=50)
+    bambi_record = repo.get_latest_bambi_score(user.id)
+
+    analysis_text = advisor.generate_clinical_analysis(
+        entries=entries,
+        child_name=child_name,
+        latest_bambi=bambi_record,
+    )
+    await message.reply_text(
+        analysis_text,
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=get_main_keyboard(),
+    )
+
+
+async def registrar_bambi_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    message = update.effective_message
+    if not user or not message:
+        return
+
+    if not context.args:
+        await message.reply_text(
+            "📋 **Cómo registrar tu puntaje BAMBI en el bot:**\n\n"
+            "Escribe `/registrar_bambi` seguido de tu puntuación total (entre 18 y 90). "
+            "Opcionalmente puedes añadir los 3 subtotales (Rechazo, Selectividad, Disruptivas).\n\n"
+            "• Ejemplo rápido: `/registrar_bambi 42`\n"
+            "• Ejemplo detallado: `/registrar_bambi 42 15 16 11`\n\n"
+            "👉 Si aún no conoces tu puntaje, calcúlalo gratis aquí:\n"
+            "[Calculadora BAMBI Interactiva](https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section)",
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+
+    try:
+        total = int(context.args[0])
+        if not (18 <= total <= 90):
+            raise ValueError("Fuera de rango")
+        refusal = int(context.args[1]) if len(context.args) > 1 else 0
+        selectivity = int(context.args[2]) if len(context.args) > 2 else 0
+        disruptive = int(context.args[3]) if len(context.args) > 3 else 0
+    except ValueError:
+        await message.reply_text(
+            "⚠️ Por favor introduce un número válido entre **18 y 90**.\nEjemplo: `/registrar_bambi 42`",
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return
+
+    record = repo.add_bambi_score(
+        user_id=user.id,
+        total_score=total,
+        refusal_score=refusal,
+        selectivity_score=selectivity,
+        disruptive_score=disruptive,
+    )
+    profile = repo.get_profile(user.id)
+    child_name = profile["child_name"]
+    status_str = (
+        "🟠 **≥ 34 ptos (Selectividad clínicamente significativa)**"
+        if record["clinical_flag"]
+        else "🟢 **< 34 ptos (Dentro del rango esperado)**"
+    )
+    await message.reply_text(
+        f"✅ **Puntaje BAMBI guardado para {child_name}:** `{total} / 90 ptos`\n"
+        f"• Interpretación: {status_str}\n\n"
+        "🧠 Ahora puedes pulsar **«Analizar y Dar Apoyos»** o escribir `/analisis` para que cruce este resultado con tu bitácora diaria.",
         parse_mode=ParseMode.MARKDOWN,
         reply_markup=get_main_keyboard(),
     )
@@ -254,7 +340,7 @@ async def bambi_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         "1️⃣ 🧃 **Rechazo Alimentario (Food Refusal):** Bloquea la boca, escupe, llora o rechaza categóricamente lo servido.\n"
         "2️⃣ 🥦 **Selectividad Alimentaria:** Rigidez con texturas, marcas, colores o resistencia a probar alimentos nuevos.\n"
         "3️⃣ 🪑 **Conductas Disruptivas en la Mesa:** Se levanta constantemente, avienta platos o no mantiene atención en comer.\n\n"
-        "💡 *Sirve como línea base para terapeutas ocupacionales, nutricionistas y psicólogos.* Puedes responder las 18 preguntas y calcular el puntaje automáticamente en nuestra web:\n"
+        "💡 *Para vincular tu resultado con el análisis de IA del bot, usa:* `/registrar_bambi <puntaje>` (ej. `/registrar_bambi 42`).\n"
         "👉 [Realizar Cuestionario BAMBI Interactivo](https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section)"
     )
     await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
@@ -266,7 +352,9 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
         return
     await query.answer()
 
-    if query.data == "ver_bitacora":
+    if query.data == "ver_analisis":
+        await analisis_command(update, context)
+    elif query.data == "ver_bitacora":
         await bitacora_command(update, context)
     elif query.data == "exportar_csv":
         await exportar_command(update, context)
@@ -284,8 +372,28 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -
         return
 
     text = update.message.text.strip()
+    lower = text.lower()
     profile = repo.upsert_profile(user_id=user.id, username=user.username or user.first_name)
     child_name = profile["child_name"]
+
+    # Si el usuario pide directamente analizar su bitácora o qué apoyos/indicaciones seguir según sus registros
+    if any(
+        kw in lower
+        for kw in (
+            "analiza mi bitacora",
+            "analiza mi bitácora",
+            "analizar bitacora",
+            "analizar bitácora",
+            "dame indicaciones",
+            "dame apoyos",
+            "que apoyos me recomiendas",
+            "qué apoyos me recomiendas",
+            "analisis de bitacora",
+            "análisis de bitácora",
+        )
+    ):
+        await analisis_command(update, context)
+        return
 
     parsed = parse_user_message(text)
 
@@ -301,7 +409,7 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             child_name=child_name,
         )
 
-    recent_entries = repo.get_recent_entries(user.id, limit=8)
+    recent_entries = repo.get_recent_entries(user.id, limit=15)
     reply = advisor.generate_response(
         user_message=text,
         parsed=parsed,
@@ -341,6 +449,8 @@ def main() -> None:
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("peque", set_child_name_command))
+    app.add_handler(CommandHandler("analisis", analisis_command))
+    app.add_handler(CommandHandler("registrar_bambi", registrar_bambi_command))
     app.add_handler(CommandHandler("bitacora", bitacora_command))
     app.add_handler(CommandHandler("exportar", exportar_command))
     app.add_handler(CommandHandler("escalera", escalera_command))

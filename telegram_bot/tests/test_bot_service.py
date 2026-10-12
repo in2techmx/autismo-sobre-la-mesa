@@ -102,6 +102,50 @@ class TestTelegramBotService(unittest.TestCase):
         self.assertIn("texturas", response.lower())
         self.assertIn("Mtra. Maria Cindy Morales Alarcón", TFM_KNOWLEDGE_BASE)
 
+    def test_clinical_analysis_and_bambi_score(self) -> None:
+        user_id = 777111
+        self.repo.upsert_profile(user_id=user_id, child_name="Mateo")
+        self.repo.add_entry(
+            user_id=user_id,
+            food_item="Galleta",
+            sensory_step="Comió",
+            raw_notes="Hoy comió galleta crujiente muy tranquilo",
+            texture_notes="Crujiente / seco",
+            mood_state="En calma",
+        )
+        self.repo.add_entry(
+            user_id=user_id,
+            food_item="Puré de calabaza",
+            sensory_step="Rechazó",
+            raw_notes="Rechazó el puré de calabaza con grumos y tuvo sobrecarga",
+            texture_notes="Con grumos",
+            mood_state="Incómodo / sobrecarga",
+        )
+        bambi = self.repo.add_bambi_score(
+            user_id=user_id,
+            total_score=46,
+            refusal_score=18,
+            selectivity_score=18,
+            disruptive_score=10,
+        )
+        self.assertTrue(bambi["clinical_flag"])
+        latest_bambi = self.repo.get_latest_bambi_score(user_id)
+        self.assertIsNotNone(latest_bambi)
+        self.assertEqual(latest_bambi["total_score"], 46)
+
+        advisor = TeaAdvisorService(gemini_api_key="")
+        entries = self.repo.get_recent_entries(user_id, limit=20)
+        analysis = advisor.generate_clinical_analysis(
+            entries=entries,
+            child_name="Mateo",
+            latest_bambi=latest_bambi,
+        )
+        self.assertIn("Mateo", analysis)
+        self.assertIn("46 / 90", analysis)
+        self.assertIn("Alimento Puente", analysis)
+        self.assertIn("Galleta", analysis)
+        self.assertIn("Puré de calabaza", analysis)
+
 
 if __name__ == "__main__":
     unittest.main()
