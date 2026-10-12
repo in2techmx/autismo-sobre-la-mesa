@@ -52,10 +52,11 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("🪜 Escalera Sensorial", callback_data="ver_escalera"),
-            InlineKeyboardButton("🤝 Redes y Apoyo", callback_data="ver_redes"),
+            InlineKeyboardButton("📋 Cuestionario BAMBI", callback_data="ver_bambi"),
         ],
         [
-            InlineKeyboardButton("🌐 Guía Web «El Autismo Sobre La Mesa»", url="https://in2techmx.github.io/autismo-sobre-la-mesa/"),
+            InlineKeyboardButton("🤝 Redes y Apoyo", callback_data="ver_redes"),
+            InlineKeyboardButton("🌐 Guía Web Interactiva", url="https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section"),
         ],
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -84,6 +85,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         f"• `/peque Nombre` — Cambia el nombre de tu peque (actual: **{child_name}**)\n"
         "• `/bitacora` — Resumen de avances registrados\n"
         "• `/exportar` — Descarga tu bitácora en Excel/CSV para llevarla a consulta\n"
+        "• `/bambi` — Guía e interpretación del Cuestionario BAMBI\n"
         "• `/escalera` — Consulta los pasos de la Escalera Sensorial\n"
         "• `/redes` — Directorio de organizaciones en España, México, Europa y EE. UU."
     )
@@ -230,6 +232,34 @@ async def redes_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
 
 
+async def bambi_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    message = update.effective_message
+    if not message:
+        return
+
+    text = (
+        "📋 **Inventario BAMBI (Brief Autism Mealtime Behavior Inventory)**\n"
+        "*Cuestionario para evaluar conducta durante las comidas (cuidadores o adultos autistas)*\n\n"
+        "📏 **Sistema de Puntuación (Escala Likert 1 a 5 en 18 ítems):**\n"
+        "• **1 pto:** Nunca / Raramente\n"
+        "• **2 ptos:** Pocas veces (Seldom)\n"
+        "• **3 ptos:** A veces\n"
+        "• **4 ptos:** A menudo\n"
+        "• **5 ptos:** Siempre / Casi todas las comidas\n"
+        "⚠️ *Ítems inversos (3, 9, 10 y 15):* Redactados en positivo (ej. «Está dispuesto a probar nuevos alimentos»); su puntaje se invierte antes de sumar ($1\\rightarrow5, 2\\rightarrow4, 3\\rightarrow3, 4\\rightarrow2, 5\\rightarrow1$).\n\n"
+        "📊 **Puntuación Total e Interpretación:**\n"
+        "• **Rango posible:** De **18 puntos** (mínimo problema) a **90 puntos** (máximo problema).\n"
+        "• **Umbral clínico:** Una puntuación total **≥ 34 puntos** suele indicar problemas de alimentación clínicamente significativos en niños con TEA.\n\n"
+        "🎯 **Análisis por 3 Dimensiones (Factores):**\n"
+        "1️⃣ 🧃 **Rechazo Alimentario (Food Refusal):** Bloquea la boca, escupe, llora o rechaza categóricamente lo servido.\n"
+        "2️⃣ 🥦 **Selectividad Alimentaria:** Rigidez con texturas, marcas, colores o resistencia a probar alimentos nuevos.\n"
+        "3️⃣ 🪑 **Conductas Disruptivas en la Mesa:** Se levanta constantemente, avienta platos o no mantiene atención en comer.\n\n"
+        "💡 *Sirve como línea base para terapeutas ocupacionales, nutricionistas y psicólogos.* Puedes responder las 18 preguntas y calcular el puntaje automáticamente en nuestra web:\n"
+        "👉 [Realizar Cuestionario BAMBI Interactivo](https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section)"
+    )
+    await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
+
+
 async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     if not query:
@@ -242,6 +272,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
         await exportar_command(update, context)
     elif query.data == "ver_escalera":
         await escalera_command(update, context)
+    elif query.data == "ver_bambi":
+        await bambi_command(update, context)
     elif query.data == "ver_redes":
         await redes_command(update, context)
 
@@ -312,6 +344,7 @@ def main() -> None:
     app.add_handler(CommandHandler("bitacora", bitacora_command))
     app.add_handler(CommandHandler("exportar", exportar_command))
     app.add_handler(CommandHandler("escalera", escalera_command))
+    app.add_handler(CommandHandler("bambi", bambi_command))
     app.add_handler(CommandHandler("redes", redes_command))
     app.add_handler(CallbackQueryHandler(handle_callback_query))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_free_text))

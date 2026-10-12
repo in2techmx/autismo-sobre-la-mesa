@@ -1301,6 +1301,349 @@ a {
 
 
 /* ═══════════════════════════════════════════════
+   CUESTIONARIO INTERACTIVO BAMBI (Chapter 6)
+═══════════════════════════════════════════════ */
+.bambi-card {
+  margin-top: var(--space-2xl);
+  padding: 2.5rem;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(143, 174, 132, 0.35);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.07);
+}
+
+.bambi-card__header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+
+.bambi-card__badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sage-dark);
+  background: rgba(143, 174, 132, 0.18);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 0.8rem;
+}
+
+.bambi-card__title {
+  font-family: var(--ff-display);
+  font-size: clamp(1.5rem, 3.2vw, 2.2rem);
+  font-weight: 900;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+
+.bambi-card__subtitle {
+  font-size: 0.96rem;
+  color: var(--charcoal-soft);
+  line-height: 1.7;
+}
+
+.bambi-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.bambi-info-box {
+  background: #FCF8F2;
+  border: 1px solid rgba(166, 124, 82, 0.22);
+  border-radius: 18px;
+  padding: 1.5rem;
+}
+
+.bambi-info-box h4 {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+}
+
+.bambi-info-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--charcoal);
+}
+
+.bambi-info-note {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--wood-dark);
+  background: rgba(232, 196, 104, 0.16);
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+}
+
+.bambi-toggle-wrapper {
+  text-align: center;
+}
+
+.bambi-toggle-btn {
+  background: var(--sage-dark);
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--ff-body);
+  font-size: 0.96rem;
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  border-radius: 100px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(94, 122, 82, 0.3);
+  transition: all 0.25s ease;
+}
+
+.bambi-toggle-btn:hover {
+  background: #4A6340;
+  transform: translateY(-2px);
+}
+
+.bambi-form {
+  margin-top: 2rem;
+  border-top: 1px dashed rgba(166, 124, 82, 0.3);
+  padding-top: 2rem;
+}
+
+.bambi-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bambi-item {
+  background: #FCF8F2;
+  border: 1px solid rgba(166, 124, 82, 0.18);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.bambi-item__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.bambi-item__q {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.bambi-item__tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 100px;
+  white-space: nowrap;
+  background: rgba(143, 174, 132, 0.2);
+  color: var(--sage-dark);
+}
+
+.bambi-item__options {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.45rem;
+}
+
+.bambi-option-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.5rem 0.3rem;
+  border-radius: 10px;
+  border: 1px solid rgba(166, 124, 82, 0.22);
+  background: #FFFFFF;
+  cursor: pointer;
+  font-size: 0.76rem;
+  color: var(--charcoal-soft);
+  transition: all 0.2s ease;
+}
+
+.bambi-option-label input {
+  margin-bottom: 0.25rem;
+  accent-color: var(--sage-dark);
+}
+
+.bambi-option-label:hover {
+  border-color: var(--sage);
+  background: rgba(143, 174, 132, 0.08);
+}
+
+.bambi-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.bambi-calc-btn {
+  background: var(--ink);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: 100px;
+  font-family: var(--ff-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bambi-calc-btn:hover {
+  background: var(--sage-dark);
+  transform: translateY(-2px);
+}
+
+.bambi-reset-btn {
+  background: transparent;
+  color: var(--charcoal-soft);
+  border: 1px solid rgba(166, 124, 82, 0.35);
+  padding: 0.85rem 1.4rem;
+  border-radius: 100px;
+  font-family: var(--ff-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.bambi-results {
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 20px;
+  background: #FDF6EC;
+  border: 2px solid var(--sage);
+}
+
+.bambi-results__score-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.bambi-score-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bambi-score-circle span {
+  font-family: var(--ff-display);
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.bambi-score-circle small {
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
+.bambi-score-summary {
+  flex: 1;
+  min-width: 220px;
+}
+
+.bambi-score-summary h4 {
+  font-family: var(--ff-display);
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.bambi-score-summary p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--charcoal);
+}
+
+.bambi-subscales {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.bambi-subscale-bar__label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.86rem;
+  margin-bottom: 0.35rem;
+}
+
+.bambi-progress-track {
+  height: 10px;
+  background: rgba(166, 124, 82, 0.15);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.bambi-progress-fill {
+  height: 100%;
+  background: var(--sage-dark);
+  border-radius: 100px;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.bambi-results__footnote {
+  font-size: 0.84rem;
+  color: var(--wood-dark);
+  line-height: 1.55;
+  border-top: 1px dashed rgba(166, 124, 82, 0.25);
+  padding-top: 0.9rem;
+}
+
+@media (max-width: 650px) {
+  .bambi-card {
+    padding: 1.4rem;
+  }
+  .bambi-item__options {
+    grid-template-columns: 1fr;
+  }
+  .bambi-option-label {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 0.6rem;
+    padding: 0.45rem 0.75rem;
+  }
+  .bambi-option-label input {
+    margin-bottom: 0;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
    RESOURCES (Chapter 7)
 ═══════════════════════════════════════════════ */
 .resource-flow {

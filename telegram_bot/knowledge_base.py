@@ -72,6 +72,24 @@ El objetivo inicial NUNCA es que el niño trague el alimento por obligación, si
 - ESTADOS UNIDOS E INTERNACIONAL:
   • STAR Institute for Sensory Processing (Colorado), SOS Approach to Feeding (Dra. Kay Toomey), Feeding Matters (PFD), Autism Speaks, Pediatric Feeding Institute (TR-Eat), ASAT.
   • Red EDAC (Eating Disorders and Autism Collaborative — Universidad de Edimburgo).
+
+=== 8. INVENTARIO BAMBI (BRIEF AUTISM MEALTIME BEHAVIOR INVENTORY) ===
+- ¿Qué es?: El cuestionario BAMBI (Lukens & Linscheid, 2008; validado internacionalmente por Sobaś et al., 2026 y Parkar & Kapoor, 2026) evalúa la conducta alimentaria en el autismo. Puede ser respondido por cuidadores o adultos autistas.
+- Sistema de puntuación (Escala Likert de 5 puntos en 18 ítems):
+  • 1 punto: Nunca / Raramente
+  • 2 puntos: Pocas veces (Seldom)
+  • 3 puntos: A veces
+  • 4 puntos: A menudo
+  • 5 puntos: Siempre / Casi todas las comidas
+- Ítems inversos: Hay 4 ítems redactados en positivo (3. Permanece sentado, 9. Es flexible con rutinas, 10. Dispuesto a probar nuevos alimentos, 15. Acepta variedad de alimentos) donde el puntaje se invierte (1->5, 2->4, 3->3, 4->2, 5->1).
+- Puntuación Total e Interpretación:
+  • Rango posible: De 18 puntos (mínima dificultad) a 90 puntos (máxima dificultad).
+  • Punto de referencia clínico: Un puntaje total >= 34 puntos indica estadísticamente la presencia de problemas de alimentación clínicamente significativos en niños con TEA.
+- Las 3 Dimensiones (Factores) del BAMBI:
+  1. 🧃 Rechazo Alimentario (Food Refusal): Evalúa si bloquea la boca, escupe, gira la cara, llora o rechaza comer lo que se le sirve.
+  2. 🥦 Selectividad Alimentaria (Limited Variety): Mide la rigidez con texturas, marcas, colores, preparación o resistencia a probar alimentos nuevos (neofobia).
+  3. 🪑 Conductas Disruptivas en la Mesa: Mide si se levanta constantemente, empuja/avienta platos, muestra inflexibilidad o conductas agresivas/autolesivas.
+- Utilidad clínica: Sirve como línea base objetiva para terapeutas ocupacionales, nutricionistas y psicólogos antes y después de la intervención.
 """
 
 SYSTEM_PROMPT = f"""Eres el Asistente Oficial de «El Autismo Sobre La Mesa» (@TEA_SobreLaMesa_Bot), basado en el Trabajo de Fin de Máster (TFM) de la Mtra. Maria Cindy Morales Alarcón (Universidad de Alicante, MUNA 2026).

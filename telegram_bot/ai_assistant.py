@@ -294,6 +294,15 @@ class TeaAdvisorService:
                     "• **Jerarquía Steps to Eating (SOS Approach to Feeding):** Armoniza con la guía «El Autismo Sobre La Mesa» "
                     "dividiendo el acercamiento en pasos sin presión (tolerar → mirar → oler → tocar → probar)."
                 )
+            elif any(k in lower for k in ["bambi", "cuestionario", "inventario", "evaluaci", "puntaje", "puntuaci"]):
+                lines.append(
+                    "📋 **Inventario BAMBI (Brief Autism Mealtime Behavior Inventory):**\n"
+                    "Consta de **18 preguntas** en escala Likert del 1 (*Nunca*) al 5 (*Siempre*), con 4 ítems inversos (3, 9, 10 y 15). Evalúa 3 dimensiones:\n"
+                    "• 🧃 **Rechazo Alimentario:** Bloquear la boca, escupir, girar la cara o llorar.\n"
+                    "• 🥦 **Selectividad Alimentaria:** Rigidez con texturas, marcas o resistencia a alimentos nuevos.\n"
+                    "• 🪑 **Conductas Disruptivas en la Mesa:** Levantarse, aventar platos o inflexibilidad en rutinas.\n"
+                    "📊 **Interpretación:** Rango de 18 a 90 puntos. Un puntaje **≥ 34 puntos** indica dificultades alimentarias clínicamente significativas. Puedes contestarlo de forma interactiva en el Capítulo 6 de nuestra web."
+                )
             elif any(k in lower for k in ["asociaci", "organiza", "ayuda", "méxico", "mexico", "españa", "alicante", "europa", "ong", "fundaci"]):
                 lines.append(
                     "🤝 **Redes y Organizaciones de Referencia:**\n"

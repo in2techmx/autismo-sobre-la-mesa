@@ -638,6 +638,113 @@
             </div>
           </div>
         </div>
+
+        <!-- ═══════════════════════════════════════════════
+             CUESTIONARIO INTERACTIVO BAMBI (18 ÍTEMS)
+        ═══════════════════════════════════════════════ -->
+        <div class="bambi-card" id="bambi-section">
+          <div class="bambi-card__header">
+            <span class="bambi-card__badge">📋 Herramienta de Evaluación Clínica (TFM)</span>
+            <h3 class="bambi-card__title">Inventario BAMBI — Evaluación de Conducta en la Mesa</h3>
+            <p class="bambi-card__subtitle">
+              El <strong>Brief Autism Mealtime Behavior Inventory (BAMBI)</strong> permite a cuidadores, familias y adultos autistas evaluar la selectividad y conducta durante las comidas para compartir una línea base objetiva con terapeutas ocupacionales, nutricionistas y psicólogos.
+            </p>
+          </div>
+
+          <div class="bambi-info-grid">
+            <div class="bambi-info-box">
+              <h4>📏 Sistema de Puntuación (Escala Likert 1 a 5)</h4>
+              <ul>
+                <li><strong>1 pto:</strong> Nunca / Raramente</li>
+                <li><strong>2 ptos:</strong> Pocas veces (Seldom)</li>
+                <li><strong>3 ptos:</strong> A veces</li>
+                <li><strong>4 ptos:</strong> A menudo</li>
+                <li><strong>5 ptos:</strong> Siempre / Casi todas las comidas</li>
+              </ul>
+              <p class="bambi-info-note">
+                ⚠️ <strong>Ítems inversos automáticos:</strong> Las preguntas redactadas en positivo (ítems 3, 9, 10 y 15) invierten automáticamente su puntaje ($1 \rightarrow 5, 2 \rightarrow 4, 3 \rightarrow 3, 4 \rightarrow 2, 5 \rightarrow 1$) al calcular el resultado.
+              </p>
+            </div>
+
+            <div class="bambi-info-box">
+              <h4>🎯 Las 3 Dimensiones que Evalúa</h4>
+              <ul>
+                <li>🧃 <strong>Rechazo Alimentario (Food Refusal):</strong> Evalúa si bloquea la boca, escupe, gira la cara, llora o rechaza comer lo que se le sirve.</li>
+                <li>🥦 <strong>Selectividad Alimentaria (Limited Variety):</strong> Mide la rigidez con texturas, marcas, preparación o resistencia a probar alimentos nuevos (neofobia).</li>
+                <li>🪑 <strong>Conductas Disruptivas / Rasgos en la Mesa:</strong> Mide si se levanta constantemente, presenta inflexibilidad en rutinas o conductas auto-lesivas/agresivas.</li>
+              </ul>
+              <p class="bambi-info-note">
+                📊 <strong>Punto de referencia clínico:</strong> Rango de <strong>18 a 90 puntos</strong>. Un puntaje total <strong>$\ge 34$ puntos</strong> suele indicar dificultades alimentarias clínicamente significativas que se benefician de acompañamiento profesional.
+              </p>
+            </div>
+          </div>
+
+          <!-- BOTÓN PARA DESPLEGAR / OCULTAR LAS 18 PREGUNTAS -->
+          <div class="bambi-toggle-wrapper">
+            <button type="button" class="bambi-toggle-btn" id="bambiToggleBtn" aria-expanded="false">
+              📝 Realizar Cuestionario BAMBI Interactivo (18 preguntas)
+            </button>
+          </div>
+
+          <form class="bambi-form" id="bambiForm" hidden>
+            <div class="bambi-questions" id="bambiQuestionsList">
+              <!-- Se renderizan dinámicamente los 18 ítems desde script.js -->
+            </div>
+
+            <div class="bambi-actions">
+              <button type="button" class="bambi-calc-btn" id="bambiCalcBtn">
+                📊 Calcular Puntuación BAMBI
+              </button>
+              <button type="button" class="bambi-reset-btn" id="bambiResetBtn">
+                🔄 Reiniciar
+              </button>
+            </div>
+
+            <!-- PANEL DE RESULTADOS DINÁMICOS -->
+            <div class="bambi-results" id="bambiResults" hidden>
+              <div class="bambi-results__score-header">
+                <div class="bambi-score-circle">
+                  <span id="bambiTotalScore">18</span>
+                  <small>/ 90 ptos</small>
+                </div>
+                <div class="bambi-score-summary">
+                  <h4 id="bambiClinicalInterpretation">Resultado de Línea Base</h4>
+                  <p id="bambiClinicalAdvice"></p>
+                </div>
+              </div>
+
+              <div class="bambi-subscales">
+                <div class="bambi-subscale-bar">
+                  <div class="bambi-subscale-bar__label">
+                    <span>🧃 Rechazo Alimentario (Food Refusal)</span>
+                    <strong id="bambiRefusalScore">0 / 25</strong>
+                  </div>
+                  <div class="bambi-progress-track"><div class="bambi-progress-fill" id="bambiRefusalBar"></div></div>
+                </div>
+
+                <div class="bambi-subscale-bar">
+                  <div class="bambi-subscale-bar__label">
+                    <span>🥦 Selectividad Alimentaria (Limited Variety)</span>
+                    <strong id="bambiSelectivityScore">0 / 40</strong>
+                  </div>
+                  <div class="bambi-progress-track"><div class="bambi-progress-fill" id="bambiSelectivityBar"></div></div>
+                </div>
+
+                <div class="bambi-subscale-bar">
+                  <div class="bambi-subscale-bar__label">
+                    <span>🪑 Conductas Disruptivas en la Mesa</span>
+                    <strong id="bambiDisruptiveScore">0 / 25</strong>
+                  </div>
+                  <div class="bambi-progress-track"><div class="bambi-progress-fill" id="bambiDisruptiveBar"></div></div>
+                </div>
+              </div>
+
+              <p class="bambi-results__footnote">
+                💡 <em>¿Para qué sirve este resultado?</em> Los terapeutas ocupacionales, nutricionistas y psicólogos utilizan estos resultados como una línea base. Tras unos meses de intervención sensorial respetuosa, se vuelve a aplicar el BAMBI para medir cómo disminuye la puntuación.
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </section>

@@ -243,4 +243,155 @@
     }, { passive: true });
   }
 
+  /* ─── 9. CUESTIONARIO INTERACTIVO BAMBI (18 Ítems + Ítems Inversos) ─── */
+  const BAMBI_ITEMS = [
+    { id: 1, text: "1. Llora o grita durante las comidas.", factor: "refusal", reverse: false },
+    { id: 2, text: "2. Gira la cara o el cuerpo para alejarse de la comida cuando se le ofrece.", factor: "refusal", reverse: false },
+    { id: 3, text: "3. Permanece sentado/a en la mesa hasta que termina la comida. (Ítem inverso)", factor: "disruptive", reverse: true },
+    { id: 4, text: "4. Escupe o expulsa la comida que ya se ha metido en la boca.", factor: "refusal", reverse: false },
+    { id: 5, text: "5. Muestra conductas agresivas durante las comidas (golpear, empujar, pellizcar).", factor: "disruptive", reverse: false },
+    { id: 6, text: "6. Muestra conductas autolesivas durante las comidas (morderse, golpearse).", factor: "disruptive", reverse: false },
+    { id: 7, text: "7. Es disruptivo/a durante las comidas (empuja o avienta los platos, cubiertos o comida).", factor: "disruptive", reverse: false },
+    { id: 8, text: "8. Cierra la boca con fuerza cuando se le presenta o acerca la comida.", factor: "refusal", reverse: false },
+    { id: 9, text: "9. Es flexible con las rutinas de la comida (ej. horarios, lugar en la mesa o utensilios). (Ítem inverso)", factor: "disruptive", reverse: true },
+    { id: 10, text: "10. Está dispuesto/a a probar alimentos nuevos. (Ítem inverso)", factor: "selectivity", reverse: true },
+    { id: 11, text: "11. Le desagradan ciertos alimentos y se niega a comerlos.", factor: "selectivity", reverse: false },
+    { id: 12, text: "12. Se niega a comer alimentos que requieren mucha masticación.", factor: "refusal", reverse: false },
+    { id: 13, text: "13. Prefiere que le sirvan los mismos alimentos en cada comida.", factor: "selectivity", reverse: false },
+    { id: 14, text: "14. Prefiere alimentos \"crujientes\" (ej. snacks, galletas saladas, cereales secos).", factor: "selectivity", reverse: false },
+    { id: 15, text: "15. Acepta y consume una variedad de alimentos. (Ítem inverso)", factor: "selectivity", reverse: true },
+    { id: 16, text: "16. Prefiere que los alimentos se le sirvan de una manera o presentación particular.", factor: "selectivity", reverse: false },
+    { id: 17, text: "17. Prefiere únicamente alimentos dulces (ej. caramelos, cereales azucarados, postres).", factor: "selectivity", reverse: false },
+    { id: 18, text: "18. Prefiere alimentos preparados de una forma específica (ej. principalmente fritos, fríos o crudos).", factor: "selectivity", reverse: false }
+  ];
+
+  const FACTOR_LABELS = {
+    refusal: "🧃 Rechazo Alimentario",
+    selectivity: "🥦 Selectividad Alimentaria",
+    disruptive: "🪑 Conductas en la Mesa"
+  };
+
+  const LIKERT_OPTIONS = [
+    { val: 1, label: "1 • Nunca / Raramente" },
+    { val: 2, label: "2 • Pocas veces" },
+    { val: 3, label: "3 • A veces" },
+    { val: 4, label: "4 • A menudo" },
+    { val: 5, label: "5 • Siempre" }
+  ];
+
+  const bambiToggleBtn = document.getElementById('bambiToggleBtn');
+  const bambiForm = document.getElementById('bambiForm');
+  const bambiQuestionsList = document.getElementById('bambiQuestionsList');
+  const bambiCalcBtn = document.getElementById('bambiCalcBtn');
+  const bambiResetBtn = document.getElementById('bambiResetBtn');
+  const bambiResults = document.getElementById('bambiResults');
+
+  function renderBambiQuestions() {
+    if (!bambiQuestionsList) return;
+    let html = '';
+    BAMBI_ITEMS.forEach(function (item) {
+      let optionsHtml = '';
+      LIKERT_OPTIONS.forEach(function (opt) {
+        const checked = opt.val === 1 ? 'checked' : '';
+        optionsHtml +=
+          '<label class="bambi-option-label">' +
+          '<input type="radio" name="bambi_q_' + item.id + '" value="' + opt.val + '" ' + checked + '>' +
+          '<span>' + opt.label + '</span>' +
+          '</label>';
+      });
+
+      html +=
+        '<div class="bambi-item">' +
+        '<div class="bambi-item__top">' +
+        '<span class="bambi-item__q">' + item.text + '</span>' +
+        '<span class="bambi-item__tag">' + FACTOR_LABELS[item.factor] + '</span>' +
+        '</div>' +
+        '<div class="bambi-item__options">' + optionsHtml + '</div>' +
+        '</div>';
+    });
+    bambiQuestionsList.innerHTML = html;
+  }
+
+  if (bambiToggleBtn && bambiForm) {
+    renderBambiQuestions();
+    bambiToggleBtn.addEventListener('click', function () {
+      const isHidden = bambiForm.hasAttribute('hidden');
+      if (isHidden) {
+        bambiForm.removeAttribute('hidden');
+        bambiToggleBtn.setAttribute('aria-expanded', 'true');
+        bambiToggleBtn.textContent = '🔼 Ocultar Cuestionario BAMBI';
+      } else {
+        bambiForm.setAttribute('hidden', '');
+        bambiToggleBtn.setAttribute('aria-expanded', 'false');
+        bambiToggleBtn.textContent = '📝 Realizar Cuestionario BAMBI Interactivo (18 preguntas)';
+      }
+    });
+  }
+
+  if (bambiCalcBtn) {
+    bambiCalcBtn.addEventListener('click', function () {
+      let total = 0;
+      let refusal = 0;
+      let selectivity = 0;
+      let disruptive = 0;
+
+      BAMBI_ITEMS.forEach(function (item) {
+        const selected = document.querySelector('input[name="bambi_q_' + item.id + '"]:checked');
+        const rawVal = selected ? parseInt(selected.value, 10) : 1;
+        const scoredVal = item.reverse ? (6 - rawVal) : rawVal;
+
+        total += scoredVal;
+        if (item.factor === 'refusal') refusal += scoredVal;
+        if (item.factor === 'selectivity') selectivity += scoredVal;
+        if (item.factor === 'disruptive') disruptive += scoredVal;
+      });
+
+      const totalEl = document.getElementById('bambiTotalScore');
+      const interpEl = document.getElementById('bambiClinicalInterpretation');
+      const adviceEl = document.getElementById('bambiClinicalAdvice');
+
+      if (totalEl) totalEl.textContent = String(total);
+
+      if (total >= 34) {
+        if (interpEl) {
+          interpEl.textContent = 'Puntaje ≥ 34: Dificultad Alimentaria Clínicamente Significativa';
+          interpEl.style.color = '#A64B3A';
+        }
+        if (adviceEl) {
+          adviceEl.textContent =
+            'Estadísticamente, una puntuación igual o superior a 34 puntos en el inventario BAMBI indica desafíos importantes en la alimentación. Te recomendamos llevar este desglose como línea base a un equipo multidisciplinar (Terapia Ocupacional en Integración Sensorial, Nutrición Pediátrica y Logopedia) y acompañar en casa sin presiones ni castigos.';
+        }
+      } else {
+        if (interpEl) {
+          interpEl.textContent = 'Puntaje < 34: Dificultad Leve o Moderada (Dentro del rango esperado)';
+          interpEl.style.color = '#4A6340';
+        }
+        if (adviceEl) {
+          adviceEl.textContent =
+            'El puntaje total se ubica por debajo del umbral clínico de 34 puntos. Aun así, observa qué dimensión obtuvo mayor puntaje para acompañar con anticipación visual, exposición gradual (Escalera Sensorial) y alimentos puente.';
+        }
+      }
+
+      document.getElementById('bambiRefusalScore').textContent = refusal + ' / 25 ptos';
+      document.getElementById('bambiSelectivityScore').textContent = selectivity + ' / 40 ptos';
+      document.getElementById('bambiDisruptiveScore').textContent = disruptive + ' / 25 ptos';
+
+      document.getElementById('bambiRefusalBar').style.width = ((refusal / 25) * 100).toFixed(0) + '%';
+      document.getElementById('bambiSelectivityBar').style.width = ((selectivity / 40) * 100).toFixed(0) + '%';
+      document.getElementById('bambiDisruptiveBar').style.width = ((disruptive / 25) * 100).toFixed(0) + '%';
+
+      if (bambiResults) {
+        bambiResults.removeAttribute('hidden');
+        bambiResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+
+  if (bambiResetBtn) {
+    bambiResetBtn.addEventListener('click', function () {
+      renderBambiQuestions();
+      if (bambiResults) bambiResults.setAttribute('hidden', '');
+    });
+  }
+
 })();
