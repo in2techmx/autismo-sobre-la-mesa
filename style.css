@@ -220,6 +220,20 @@ a {
   font-weight: 700;
 }
 
+.hero__author {
+  font-family: var(--ff-body);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  color: var(--wood-dark);
+  margin-bottom: var(--space-xs);
+  animation: fadeInDown 0.8s ease-out 0.5s both;
+}
+
+.hero__author strong {
+  color: var(--charcoal);
+  font-weight: 600;
+}
+
 .hero__subtitle {
   font-family: var(--ff-body);
   font-size: clamp(1rem, 2.2vw, 1.35rem);
