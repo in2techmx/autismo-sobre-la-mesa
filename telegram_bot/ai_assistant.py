@@ -281,19 +281,34 @@ class TeaAdvisorService:
                 )
             elif any(k in lower for k in ["escuela", "colegio", "comedor", "maestra", "profes"]):
                 lines.append(
-                    "🏫 **El comedor escolar y la coordinación:**\n"
+                    "🏫 **El comedor escolar y la adaptación sensorial (Conti et al., 2026):**\n"
                     "El ruido acústico, los olores mezclados y la prisa del comedor escolar suelen desregular al niño antes del primer bocado.\n"
                     "• **Recomendación:** Acuerda con la escuela anticipar el menú con pictogramas, permitir un lugar más tranquilo, "
                     "respetar su utensilio habitual y asegurar siempre al menos un **alimento seguro** en su bandeja."
                 )
+            elif any(k in lower for k in ["arfid", "trastorno", "evitación", "evitacion", "sos", "toomey"]):
+                lines.append(
+                    "🔬 **Evidencia Internacional (ARFID & Método SOS):**\n"
+                    "• **Comorbilidad TEA–ARFID:** Investigada por la red *EDAC (Universidad de Edimburgo, Sader et al., 2025)*, "
+                    "reconoce cuando la selectividad trasciende a un Trastorno de Evitación/Restricción de la Ingesta de Alimentos.\n"
+                    "• **Jerarquía Steps to Eating (SOS Approach to Feeding):** Armoniza con la guía «El Autismo Sobre La Mesa» "
+                    "dividiendo el acercamiento en pasos sin presión (tolerar → mirar → oler → tocar → probar)."
+                )
+            elif any(k in lower for k in ["asociaci", "organiza", "ayuda", "méxico", "mexico", "españa", "alicante", "europa", "ong", "fundaci"]):
+                lines.append(
+                    "🤝 **Redes y Organizaciones de Referencia:**\n"
+                    "• **España:** APACV (Alicante), Confederación Autismo España, Universidad de Alicante (MUNA), Fundación ConecTEA, Fundación Ángel Rivière, AEPED/SPINUT.\n"
+                    "• **México:** Colectivo Autismo Ciudad de México (Apapache A.C., Autentic, Cemedepsi, Crea tu Mundo, Comunidad Unique) y Fundación TATO.\n"
+                    "• **Europa e Internacional:** Autism-Europe, STAR Institute for Sensory Processing, SOS Approach to Feeding y Feeding Matters."
+                )
             else:
                 lines.append(
-                    "📘 **Guía «El Autismo Sobre La Mesa» (Mtra. Cindy Morales Alarcón):**\n"
+                    "📘 **Guía «El Autismo Sobre La Mesa» (Mtra. Cindy Morales Alarcón — UA/MUNA):**\n"
                     "Para acompañar la selectividad alimentaria en casa recuerda los 4 pilares del estudio:\n"
                     "1️⃣ **Cero coacción:** Evita luchas de poder; el estrés bloquea el apetito.\n"
                     "2️⃣ **Regulación previa:** 10 minutos de juego tranquilo o presión profunda antes de ir a la mesa.\n"
                     "3️⃣ **Escalera sensorial:** Tolerar en la mesa → tocar → oler → besar el alimento → probar con permiso de escupir.\n"
-                    "4️⃣ **Alimento puente:** Conecta alimentos seguros con nuevos que compartan color, forma o textura."
+                    "4️⃣ **Alimento puente (Food Chaining):** Conecta alimentos seguros con nuevos que compartan color, forma o textura."
                 )
 
         return "\n\n".join(lines)

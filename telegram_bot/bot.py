@@ -52,7 +52,10 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("🪜 Escalera Sensorial", callback_data="ver_escalera"),
-            InlineKeyboardButton("🌐 Ver Guía Web", url="https://in2techmx.github.io/autismo-sobre-la-mesa/"),
+            InlineKeyboardButton("🤝 Redes y Apoyo", callback_data="ver_redes"),
+        ],
+        [
+            InlineKeyboardButton("🌐 Guía Web «El Autismo Sobre La Mesa»", url="https://in2techmx.github.io/autismo-sobre-la-mesa/"),
         ],
     ]
     return InlineKeyboardMarkup(keyboard)
@@ -69,7 +72,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     welcome_text = (
         f"🍽️ **¡Hola, {user.first_name}! Bienvenido/a a «El Autismo Sobre La Mesa»**\n\n"
         "Soy tu asistente de acompañamiento e integración sensorial, basado en el Trabajo de Fin de Máster "
-        "de la **Mtra. Maria Cindy Morales Alarcón** (*Máster Universitario en Nutrición y Alimentación*).\n\n"
+        "de la **Mtra. Maria Cindy Morales Alarcón** (*MUNA — Universidad de Alicante*).\n\n"
         "✨ **¿Cómo puedo ayudarte hoy?**\n"
         "1️⃣ **Llevar tu Bitácora por mensaje libre:** Solo escríbeme como a un amigo, por ejemplo:\n"
         "   • *\"Hoy en la comida toleró el brócoli en el plato y lo tocó con el tenedor, estuvo tranquilo\"*\n"
@@ -81,7 +84,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         f"• `/peque Nombre` — Cambia el nombre de tu peque (actual: **{child_name}**)\n"
         "• `/bitacora` — Resumen de avances registrados\n"
         "• `/exportar` — Descarga tu bitácora en Excel/CSV para llevarla a consulta\n"
-        "• `/escalera` — Consulta los pasos de la Escalera Sensorial"
+        "• `/escalera` — Consulta los pasos de la Escalera Sensorial\n"
+        "• `/redes` — Directorio de organizaciones en España, México, Europa y EE. UU."
     )
     await update.message.reply_text(
         welcome_text,
@@ -200,6 +204,32 @@ async def escalera_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     await message.reply_text(text, parse_mode=ParseMode.MARKDOWN)
 
 
+async def redes_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    message = update.effective_message
+    if not message:
+        return
+
+    text = (
+        "🤝 **Redes y Organizaciones de Referencia Internacional**\n"
+        "*Informe de Investigación — Mtra. Maria Cindy Morales Alarcón (UA/MUNA)*\n\n"
+        "🇪🇸 **España:**\n"
+        "• **APACV (Alicante):** Asociación de Padres y Amigos de Personas con Autismo de la Comunidad Valenciana.\n"
+        "• **Autismo España** y Federaciones Autonómicas.\n"
+        "• **Universidad de Alicante (MUNA):** Soporte científico y transferencia.\n"
+        "• **Fundación ConecTEA / Ángel Rivière / Aucavi / AEPED-SPINUT.**\n\n"
+        "🇲🇽 **México:**\n"
+        "• **Colectivo Autismo Ciudad de México:** Apapache A.C., Autentic/Autismo México, Cemedepsi, Crea tu Mundo Autismo, Comunidad Unique.\n"
+        "• **Fundación TATO** y colectivos estatales (Guadalajara, Monterrey, Mérida, Puebla).\n\n"
+        "🇪🇺 **Unión Europea:**\n"
+        "• **Autism-Europe**, Federació Catalana d'Autisme, EPR (European Platform for Rehabilitation).\n\n"
+        "🌎 **Estados Unidos e Internacional:**\n"
+        "• **STAR Institute for Sensory Processing** (Colorado)\n"
+        "• **SOS Approach to Feeding** (Dra. Kay Toomey — *Steps to Eating*)\n"
+        "• **Feeding Matters** (PFD), **Autism Speaks**, **EDAC** (Univ. de Edimburgo — ARFID)."
+    )
+    await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
+
+
 async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     if not query:
@@ -212,6 +242,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
         await exportar_command(update, context)
     elif query.data == "ver_escalera":
         await escalera_command(update, context)
+    elif query.data == "ver_redes":
+        await redes_command(update, context)
 
 
 async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -252,12 +284,25 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     )
 
 
+def _load_dotenv_if_present() -> None:
+    env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if os.path.exists(env_file):
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    if k.strip() not in os.environ:
+                        os.environ[k.strip()] = v.strip().strip('"').strip("'")
+
+
 def main() -> None:
+    _load_dotenv_if_present()
     token = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
     if not token:
         raise RuntimeError(
             "Falta la variable de entorno TELEGRAM_BOT_TOKEN. "
-            "Configúrala antes de iniciar el bot: $env:TELEGRAM_BOT_TOKEN='tu_token_de_botfather'"
+            "Configúrala en .env o antes de iniciar el bot."
         )
 
     app = Application.builder().token(token).build()
@@ -267,10 +312,11 @@ def main() -> None:
     app.add_handler(CommandHandler("bitacora", bitacora_command))
     app.add_handler(CommandHandler("exportar", exportar_command))
     app.add_handler(CommandHandler("escalera", escalera_command))
+    app.add_handler(CommandHandler("redes", redes_command))
     app.add_handler(CallbackQueryHandler(handle_callback_query))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_free_text))
 
-    logger.info("Bot «El Autismo Sobre La Mesa» iniciado y escuchando mensajes...")
+    logger.info("Bot «El Autismo Sobre La Mesa» (@TEA_SobreLaMesa_Bot) iniciado y escuchando mensajes...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 

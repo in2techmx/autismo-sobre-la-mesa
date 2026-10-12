@@ -1460,6 +1460,13 @@ a {
   color: var(--charcoal-soft);
 }
 
+.telegram-companion__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
 .telegram-companion__btn {
   display: inline-block;
   background: var(--sky-deep);
@@ -1477,6 +1484,22 @@ a {
   background: #4784AD;
   transform: translateY(-2px);
   box-shadow: 0 10px 26px rgba(90, 155, 199, 0.45);
+}
+
+.telegram-companion__btn--secondary {
+  background: var(--sage-dark);
+  box-shadow: 0 6px 20px rgba(94, 122, 82, 0.3);
+}
+
+.telegram-companion__btn--secondary:hover {
+  background: #4A6340;
+  box-shadow: 0 10px 26px rgba(94, 122, 82, 0.4);
+}
+
+.ngo-roadmap-section {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  border-top: 1px dashed rgba(166, 124, 82, 0.25);
 }
 
 
