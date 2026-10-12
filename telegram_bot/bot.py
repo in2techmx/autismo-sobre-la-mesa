@@ -32,6 +32,13 @@ from telegram.ext import (
 
 from ai_assistant import TeaAdvisorService, parse_user_message
 from database import BitacoraRepository
+from questionnaire_bbm import (
+    BBM_QUESTIONNAIRE_ITEMS,
+    LIKERT_OPTIONS,
+    compute_bambi_bbm_results,
+    format_bbm_assessment_report,
+    format_question_prompt,
+)
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -47,7 +54,10 @@ advisor = TeaAdvisorService()
 def get_main_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [
-            InlineKeyboardButton("🧠 Analizar y Dar Apoyos", callback_data="ver_analisis"),
+            InlineKeyboardButton("📋 Realizar Cuestionario BAMBI / BBMagistral", callback_data="iniciar_cuestionario"),
+        ],
+        [
+            InlineKeyboardButton("🧠 Analizar Bitácora y Dar Apoyos", callback_data="ver_analisis"),
         ],
         [
             InlineKeyboardButton("📒 Ver mi Bitácora", callback_data="ver_bitacora"),
@@ -55,14 +65,28 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         ],
         [
             InlineKeyboardButton("🪜 Escalera Sensorial", callback_data="ver_escalera"),
-            InlineKeyboardButton("📋 Cuestionario BAMBI", callback_data="ver_bambi"),
+            InlineKeyboardButton("🤝 Redes y Apoyo", callback_data="ver_redes"),
         ],
         [
-            InlineKeyboardButton("🤝 Redes y Apoyo", callback_data="ver_redes"),
-            InlineKeyboardButton("🌐 Guía Web Interactiva", url="https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section"),
+            InlineKeyboardButton("🌐 Ver Guía Web Interactiva", url="https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section"),
         ],
     ]
     return InlineKeyboardMarkup(keyboard)
+
+
+def get_question_keyboard(index: int) -> InlineKeyboardMarkup:
+    rows = []
+    for val, label in LIKERT_OPTIONS:
+        rows.append([InlineKeyboardButton(label, callback_data=f"q_ans:{index}:{val}")])
+
+    nav_row = []
+    if index > 0:
+        nav_row.append(InlineKeyboardButton("⬅️ Anterior", callback_data=f"q_prev:{index - 1}"))
+    if index >= 18:
+        nav_row.append(InlineKeyboardButton("✅ Ver Resultado Ahora", callback_data="q_finish"))
+    nav_row.append(InlineKeyboardButton("❌ Cancelar", callback_data="q_cancel"))
+    rows.append(nav_row)
+    return InlineKeyboardMarkup(rows)
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -76,23 +100,21 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     welcome_text = (
         f"🍽️ **¡Hola, {user.first_name}! Bienvenido/a a «El Autismo Sobre La Mesa»**\n\n"
         "Soy tu asistente de acompañamiento e integración sensorial, basado en el Trabajo de Fin de Máster "
-        "de la **Mtra. Maria Cindy Morales Alarcón** (*MUNA — Universidad de Alicante*).\n\n"
+        "de la **Mtra. Maria Cindy Morales Alarcón** (*MUNA — Universidad de Alicante*) y su **Base Bibliográfica Magistral (BBMagistral)**.\n\n"
         "✨ **¿Cómo puedo ayudarte hoy?**\n"
-        "1️⃣ **Llevar tu Bitácora por mensaje libre:** Solo escríbeme como a un amigo, por ejemplo:\n"
+        "1️⃣ **Realizar aquí mismo el Cuestionario BAMBI + BBMagistral (`/cuestionario` o `/bambi`):**\n"
+        "   • Te haré las preguntas paso a paso con botones interactivos (1 a 5), invertiré automáticamente los ítems positivos (3, 9, 10 y 15) y te entregaré el diagnóstico por dimensiones + apoyos clínicos.\n\n"
+        "2️⃣ **Llevar tu Bitácora por mensaje libre:** Solo escríbeme como a un amigo:\n"
         "   • *\"Hoy en la comida toleró el brócoli en el plato y lo tocó con el tenedor, estuvo tranquilo\"*\n"
         "   • *\"Hoy rechazó el puré de papa porque tenía grumos\"*\n\n"
-        "2️⃣ **Analizar tus registros con IA y darte Indicaciones/Apoyos:**\n"
-        "   • Usa `/analisis` (o el botón **🧠 Analizar y Dar Apoyos**) para que cruce tu historial de comidas y tu puntaje BAMBI y te dé estrategias personalizadas de *Alimento Puente*, *Regulación Sensorial* y *Ajustes en Mesa*.\n\n"
-        "3️⃣ **Resolver tus dudas sobre TEA y alimentación:** Pregúntame lo que necesites:\n"
-        "   • *\"¿Cómo aplico el alimento puente si solo come nuggets?\"*\n"
-        "   • *\"¿Por qué le dan arcadas los olores fuertes?\"*\n\n"
+        "3️⃣ **Analizar tus registros con IA y darte Indicaciones/Apoyos (`/analisis`):**\n"
+        "   • Cruzo tu bitácora diaria con tu evaluación BAMBI/BBMagistral para darte estrategias de *Alimento Puente*, *Regulación Sensorial* y *Ajustes en Mesa*.\n\n"
         "📌 **Comandos rápidos:**\n"
-        f"• `/peque Nombre` — Cambia el nombre de tu peque (actual: **{child_name}**)\n"
+        "• `/cuestionario` o `/bambi` — **Iniciar el cuestionario interactivo paso a paso aquí en el chat**\n"
         "• `/analisis` — **Diagnóstico de patrones e indicaciones personalizadas de apoyo**\n"
-        "• `/registrar_bambi 42` — Guarda tu puntaje del cuestionario BAMBI en tu expediente\n"
+        f"• `/peque Nombre` — Cambia el nombre de tu peque (actual: **{child_name}**)\n"
         "• `/bitacora` — Resumen de avances registrados\n"
         "• `/exportar` — Descarga tu bitácora en Excel/CSV para llevarla a consulta\n"
-        "• `/bambi` — Guía e interpretación del Cuestionario BAMBI\n"
         "• `/escalera` — Consulta los pasos de la Escalera Sensorial\n"
         "• `/redes` — Directorio de organizaciones en España, México, Europa y EE. UU."
     )
@@ -318,51 +340,127 @@ async def redes_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
 
 
-async def bambi_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def iniciar_cuestionario_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
     message = update.effective_message
-    if not message:
+    if not user or not message:
         return
 
-    text = (
-        "📋 **Inventario BAMBI (Brief Autism Mealtime Behavior Inventory)**\n"
-        "*Cuestionario para evaluar conducta durante las comidas (cuidadores o adultos autistas)*\n\n"
-        "📏 **Sistema de Puntuación (Escala Likert 1 a 5 en 18 ítems):**\n"
-        "• **1 pto:** Nunca / Raramente\n"
-        "• **2 ptos:** Pocas veces (Seldom)\n"
-        "• **3 ptos:** A veces\n"
-        "• **4 ptos:** A menudo\n"
-        "• **5 ptos:** Siempre / Casi todas las comidas\n"
-        "⚠️ *Ítems inversos (3, 9, 10 y 15):* Redactados en positivo (ej. «Está dispuesto a probar nuevos alimentos»); su puntaje se invierte antes de sumar ($1\\rightarrow5, 2\\rightarrow4, 3\\rightarrow3, 4\\rightarrow2, 5\\rightarrow1$).\n\n"
-        "📊 **Puntuación Total e Interpretación:**\n"
-        "• **Rango posible:** De **18 puntos** (mínimo problema) a **90 puntos** (máximo problema).\n"
-        "• **Umbral clínico:** Una puntuación total **≥ 34 puntos** suele indicar problemas de alimentación clínicamente significativos en niños con TEA.\n\n"
-        "🎯 **Análisis por 3 Dimensiones (Factores):**\n"
-        "1️⃣ 🧃 **Rechazo Alimentario (Food Refusal):** Bloquea la boca, escupe, llora o rechaza categóricamente lo servido.\n"
-        "2️⃣ 🥦 **Selectividad Alimentaria:** Rigidez con texturas, marcas, colores o resistencia a probar alimentos nuevos.\n"
-        "3️⃣ 🪑 **Conductas Disruptivas en la Mesa:** Se levanta constantemente, avienta platos o no mantiene atención en comer.\n\n"
-        "💡 *Para vincular tu resultado con el análisis de IA del bot, usa:* `/registrar_bambi <puntaje>` (ej. `/registrar_bambi 42`).\n"
-        "👉 [Realizar Cuestionario BAMBI Interactivo](https://in2techmx.github.io/autismo-sobre-la-mesa/#bambi-section)"
+    profile = repo.upsert_profile(user_id=user.id, username=user.username or user.first_name)
+    child_name = profile["child_name"]
+
+    context.user_data["bbm_answers"] = {}
+    prompt_text = (
+        "📋 **EVALUACIÓN INTERACTIVA BAMBI + BBMAGISTRAL (22 ÍTEMS)**\n"
+        "*Realiza aquí mismo en el bot el inventario clínico validado (Soba et al., 2026 [BBM-001]; Morales-Zepeda et al., 2025 [BBM-005]; Laaraje et al., 2026 [BBM-003])*\n\n"
+        + format_question_prompt(0, child_name)
     )
-    await message.reply_text(text, parse_mode=ParseMode.MARKDOWN, reply_markup=get_main_keyboard())
+    await message.reply_text(
+        prompt_text,
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=get_question_keyboard(0),
+    )
+
+
+async def bambi_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    await iniciar_cuestionario_command(update, context)
+
+
+async def _finalize_questionnaire(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    query = update.callback_query
+    if not user or not query:
+        return
+
+    answers = context.user_data.get("bbm_answers", {})
+    results = compute_bambi_bbm_results(answers)
+    profile = repo.get_profile(user.id)
+    child_name = profile["child_name"]
+
+    notes_summary = (
+        f"BBM-Sensory={results['bbm_sensory']}/5 | "
+        f"BBM-GI={results['bbm_gi']}/5 | "
+        f"BBM-Praxis={results['bbm_praxis']}/5 | "
+        f"BBM-Family={results['bbm_family']}/5"
+    )
+    repo.add_bambi_score(
+        user_id=user.id,
+        total_score=results["total_score"],
+        refusal_score=results["refusal_score"],
+        selectivity_score=results["selectivity_score"],
+        disruptive_score=results["disruptive_score"],
+        notes=notes_summary,
+    )
+
+    report_text = format_bbm_assessment_report(results, child_name)
+    await query.edit_message_text(
+        report_text,
+        parse_mode=ParseMode.MARKDOWN,
+        reply_markup=get_main_keyboard(),
+    )
 
 
 async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
-    if not query:
+    user = update.effective_user
+    if not query or not user:
         return
     await query.answer()
 
-    if query.data == "ver_analisis":
+    data = query.data or ""
+
+    if data in ("iniciar_cuestionario", "ver_bambi"):
+        await iniciar_cuestionario_command(update, context)
+    elif data.startswith("q_ans:"):
+        _, idx_str, val_str = data.split(":")
+        idx = int(idx_str)
+        val = int(val_str)
+
+        if "bbm_answers" not in context.user_data:
+            context.user_data["bbm_answers"] = {}
+
+        item = BBM_QUESTIONNAIRE_ITEMS[idx]
+        context.user_data["bbm_answers"][item.number] = val
+
+        next_idx = idx + 1
+        if next_idx < len(BBM_QUESTIONNAIRE_ITEMS):
+            profile = repo.get_profile(user.id)
+            child_name = profile["child_name"]
+            await query.edit_message_text(
+                format_question_prompt(next_idx, child_name),
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=get_question_keyboard(next_idx),
+            )
+        else:
+            await _finalize_questionnaire(update, context)
+    elif data.startswith("q_prev:"):
+        _, prev_idx_str = data.split(":")
+        prev_idx = max(0, int(prev_idx_str))
+        profile = repo.get_profile(user.id)
+        child_name = profile["child_name"]
+        await query.edit_message_text(
+            format_question_prompt(prev_idx, child_name),
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=get_question_keyboard(prev_idx),
+        )
+    elif data == "q_finish":
+        await _finalize_questionnaire(update, context)
+    elif data == "q_cancel":
+        context.user_data.pop("bbm_answers", None)
+        await query.edit_message_text(
+            "⏹️ Cuestionario cancelado. Puedes reiniciarlo cuando quieras escribiendo `/cuestionario` o `/bambi`.",
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=get_main_keyboard(),
+        )
+    elif data == "ver_analisis":
         await analisis_command(update, context)
-    elif query.data == "ver_bitacora":
+    elif data == "ver_bitacora":
         await bitacora_command(update, context)
-    elif query.data == "exportar_csv":
+    elif data == "exportar_csv":
         await exportar_command(update, context)
-    elif query.data == "ver_escalera":
+    elif data == "ver_escalera":
         await escalera_command(update, context)
-    elif query.data == "ver_bambi":
-        await bambi_command(update, context)
-    elif query.data == "ver_redes":
+    elif data == "ver_redes":
         await redes_command(update, context)
 
 
@@ -375,6 +473,25 @@ async def handle_free_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     lower = text.lower()
     profile = repo.upsert_profile(user_id=user.id, username=user.username or user.first_name)
     child_name = profile["child_name"]
+
+    # Si el usuario pide realizar el cuestionario BAMBI / BBMagistral por mensaje libre
+    if any(
+        kw in lower
+        for kw in (
+            "hacer cuestionario",
+            "realizar cuestionario",
+            "iniciar cuestionario",
+            "hacer el cuestionario",
+            "aplicar cuestionario",
+            "hacer bambi",
+            "test bambi",
+            "cuestionario bambi",
+            "bbmagistral",
+            "bbm",
+        )
+    ):
+        await iniciar_cuestionario_command(update, context)
+        return
 
     # Si el usuario pide directamente analizar su bitácora o qué apoyos/indicaciones seguir según sus registros
     if any(
@@ -449,12 +566,13 @@ def main() -> None:
 
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("peque", set_child_name_command))
+    app.add_handler(CommandHandler("cuestionario", iniciar_cuestionario_command))
+    app.add_handler(CommandHandler("bambi", bambi_command))
     app.add_handler(CommandHandler("analisis", analisis_command))
     app.add_handler(CommandHandler("registrar_bambi", registrar_bambi_command))
     app.add_handler(CommandHandler("bitacora", bitacora_command))
     app.add_handler(CommandHandler("exportar", exportar_command))
     app.add_handler(CommandHandler("escalera", escalera_command))
-    app.add_handler(CommandHandler("bambi", bambi_command))
     app.add_handler(CommandHandler("redes", redes_command))
     app.add_handler(CallbackQueryHandler(handle_callback_query))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_free_text))

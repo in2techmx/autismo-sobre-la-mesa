@@ -146,6 +146,43 @@ class TestTelegramBotService(unittest.TestCase):
         self.assertIn("Galleta", analysis)
         self.assertIn("Puré de calabaza", analysis)
 
+    def test_bbm_interactive_questionnaire_scoring(self) -> None:
+        from questionnaire_bbm import (
+            BBM_QUESTIONNAIRE_ITEMS,
+            compute_bambi_bbm_results,
+            format_bbm_assessment_report,
+            format_question_prompt,
+        )
+
+        self.assertEqual(len(BBM_QUESTIONNAIRE_ITEMS), 22)
+
+        # Caso de mínimo problema: ítems directos en 1 (Nunca), ítems inversos (3, 9, 10, 15) en 5 (Siempre)
+        min_answers = {i: 1 for i in range(1, 23)}
+        for rev_item in (3, 9, 10, 15):
+            min_answers[rev_item] = 5
+        res_min = compute_bambi_bbm_results(min_answers)
+        self.assertEqual(res_min["total_score"], 18)
+        self.assertFalse(res_min["clinical_flag"])
+
+        # Caso de alto problema: ítems directos en 4, ítems inversos en 1 (se invierten a 5), BBM en 4
+        high_answers = {i: 4 for i in range(1, 23)}
+        for rev_item in (3, 9, 10, 15):
+            high_answers[rev_item] = 1
+        res_high = compute_bambi_bbm_results(high_answers)
+        # 14 ítems directos * 4 = 56; 4 ítems inversos * 5 = 20 -> Total = 76
+        self.assertEqual(res_high["total_score"], 76)
+        self.assertTrue(res_high["clinical_flag"])
+        self.assertEqual(res_high["bbm_gi"], 4)
+
+        prompt_q3 = format_question_prompt(2, "Mía")
+        self.assertIn("Pregunta 3 de 22", prompt_q3)
+        self.assertIn("Ítem Inverso", prompt_q3)
+
+        report = format_bbm_assessment_report(res_high, "Mía")
+        self.assertIn("76 / 90 puntos", report)
+        self.assertIn("BBM-014", report)
+        self.assertIn("SemAlTea", report)
+
 
 if __name__ == "__main__":
     unittest.main()
