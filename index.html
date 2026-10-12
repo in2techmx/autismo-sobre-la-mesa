@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Autismo Sobre La Mesa — Una Guía Visual</title>
+  <meta name="description" content="Comprender la selectividad alimentaria más allá del capricho. Una guía visual para familias, educadores y profesionales de la salud.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       PROGRESS BAR - Reading progress
+  ═══════════════════════════════════════════════ -->
+  <div class="reading-progress" id="readingProgress"></div>
+
+  <!-- ═══════════════════════════════════════════════
+       NAVIGATION - Floating chapter dots
+  ═══════════════════════════════════════════════ -->
+  <nav class="chapter-nav" id="chapterNav">
+    <a href="#hero" class="nav-dot active" data-label="Inicio" aria-label="Ir a Inicio"></a>
+    <a href="#chapter-1" class="nav-dot" data-label="No es capricho" aria-label="Ir a Capítulo 1"></a>
+    <a href="#chapter-2" class="nav-dot" data-label="Los sentidos" aria-label="Ir a Capítulo 2"></a>
+    <a href="#chapter-3" class="nav-dot" data-label="Hiper & Hipo" aria-label="Ir a Capítulo 3"></a>
+    <a href="#chapter-4" class="nav-dot" data-label="Estrategias" aria-label="Ir a Capítulo 4"></a>
+    <a href="#chapter-5" class="nav-dot" data-label="La familia" aria-label="Ir a Capítulo 5"></a>
+    <a href="#chapter-6" class="nav-dot" data-label="Profesionales" aria-label="Ir a Capítulo 6"></a>
+    <a href="#chapter-7" class="nav-dot" data-label="Recursos" aria-label="Ir a Capítulo 7"></a>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════
+       HERO — Full immersive opening
+  ═══════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero__bg-layer"></div>
+    <div class="hero__grain"></div>
+    <div class="hero__content">
+      <span class="hero__badge">Guía Visual Interactiva</span>
+      <h1 class="hero__title">
+        El Autismo<br>
+        <span class="hero__title--accent">Sobre La Mesa</span>
+      </h1>
+      <p class="hero__subtitle">Comprender la selectividad alimentaria<br>más allá del capricho.</p>
+      <div class="hero__meta">
+        <span class="hero__tag">Para familias</span>
+        <span class="hero__tag">Para educadores</span>
+        <span class="hero__tag">Para profesionales</span>
+      </div>
+      <div class="hero__scroll-cue">
+        <span>Desliza para explorar</span>
+        <div class="hero__scroll-arrow"></div>
+      </div>
+    </div>
+    <div class="hero__character">
+      <img src="images/cover.png" alt="Mía sentada a la mesa — El Autismo Sobre La Mesa" loading="eager">
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       INTERLUDE — Stat ribbon (horizontal scroll effect)
+  ═══════════════════════════════════════════════ -->
+  <section class="stat-ribbon">
+    <div class="stat-ribbon__track">
+      <div class="stat-ribbon__item">
+        <span class="stat-ribbon__number">70%</span>
+        <span class="stat-ribbon__label">de niños con TEA presentan selectividad alimentaria</span>
+      </div>
+      <div class="stat-ribbon__divider">✦</div>
+      <div class="stat-ribbon__item">
+        <span class="stat-ribbon__number">5</span>
+        <span class="stat-ribbon__label">sentidos involucrados en cada bocado</span>
+      </div>
+      <div class="stat-ribbon__divider">✦</div>
+      <div class="stat-ribbon__item">
+        <span class="stat-ribbon__number">∞</span>
+        <span class="stat-ribbon__label">paciencia y amor necesarios</span>
+      </div>
+      <div class="stat-ribbon__divider">✦</div>
+      <div class="stat-ribbon__item">
+        <span class="stat-ribbon__number">0</span>
+        <span class="stat-ribbon__label">culpa de los padres o del niño</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 1 — No es un capricho (Mía's story)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--mia" id="chapter-1">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--warm"></div>
+      
+      <div class="chapter__split">
+        <div class="chapter__visual">
+          <div class="character-frame character-frame--float">
+            <img src="images/mia.jpg" alt="Mía mirando su plato con preocupación" loading="lazy">
+            <div class="character-frame__name">
+              <span class="character-frame__icon">🎀</span> Mía
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter__narrative">
+          <span class="chapter__number">Capítulo 01</span>
+          <h2 class="chapter__title">No es un capricho</h2>
+          
+          <div class="narrative-block">
+            <p class="narrative-block__lead">
+              Mía tiene 5 años. Le encantan las mariposas, los cuentos de hadas y las galletas con forma de estrella. Pero cuando llega la hora de comer, algo cambia.
+            </p>
+          </div>
+
+          <div class="narrative-block narrative-block--quote">
+            <blockquote>
+              "Mamá, eso huele raro. No me gusta cómo se ve. ¿Por qué está todo mezclado?"
+            </blockquote>
+            <cite>— Lo que Mía siente pero no siempre puede expresar</cite>
+          </div>
+
+          <div class="narrative-block">
+            <p>Para Mía, un plato de verduras mixtas no es simplemente "comida". Es una <strong>avalancha de información sensorial</strong> que su cerebro procesa de manera diferente:</p>
+            
+            <ul class="sensory-list">
+              <li class="sensory-list__item sensory-list__item--sight">
+                <span class="sensory-list__icon">👁️</span>
+                <div>
+                  <strong>Los colores se mezclan</strong> — la predictibilidad visual se rompe
+                </div>
+              </li>
+              <li class="sensory-list__item sensory-list__item--smell">
+                <span class="sensory-list__icon">👃</span>
+                <div>
+                  <strong>Los olores compiten</strong> — el brócoli junto a la zanahoria crea una combinación abrumadora
+                </div>
+              </li>
+              <li class="sensory-list__item sensory-list__item--touch">
+                <span class="sensory-list__icon">🤚</span>
+                <div>
+                  <strong>Las texturas son impredecibles</strong> — blando aquí, fibroso allá, crujiente más allá
+                </div>
+              </li>
+              <li class="sensory-list__item sensory-list__item--taste">
+                <span class="sensory-list__icon">👅</span>
+                <div>
+                  <strong>Los sabores se amplifican</strong> — lo que para ti es suave, para Mía puede ser intenso
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="narrative-block narrative-block--callout">
+            <div class="callout">
+              <div class="callout__icon">💡</div>
+              <div class="callout__content">
+                <p><strong>Dato clave:</strong> Entre el <em>50% y el 80%</em> de los menores dentro del espectro autista presentan patrones de alimentación muy restringidos. No es un problema de educación ni de voluntad.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 2 — El mundo sensorial (Brain character)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--brain" id="chapter-2">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--cool"></div>
+      
+      <div class="chapter__split chapter__split--reverse">
+        <div class="chapter__narrative">
+          <span class="chapter__number">Capítulo 02</span>
+          <h2 class="chapter__title">Un cerebro que siente diferente</h2>
+          
+          <div class="narrative-block">
+            <p class="narrative-block__lead">
+              La boca y las manos son las zonas con mayor densidad de receptores sensoriales del cuerpo humano. Para un niño con TEA, cada comida es una expedición a territorio desconocido.
+            </p>
+          </div>
+
+          <div class="narrative-block">
+            <div class="sense-map">
+              <div class="sense-map__item" style="--delay: 0s">
+                <div class="sense-map__circle sense-map__circle--sight">👁️</div>
+                <h3>Vista</h3>
+                <p>El color, la forma, la presentación — todo debe ser predecible. Un cambio mínimo en la marca del yogur puede provocar rechazo total.</p>
+              </div>
+              <div class="sense-map__item" style="--delay: 0.1s">
+                <div class="sense-map__circle sense-map__circle--smell">👃</div>
+                <h3>Olfato</h3>
+                <p>Los olores de la cocina llegan antes que el plato. El pescado cocinándose o las verduras al vapor pueden ser insoportables.</p>
+              </div>
+              <div class="sense-map__item" style="--delay: 0.2s">
+                <div class="sense-map__circle sense-map__circle--touch">🤚</div>
+                <h3>Tacto</h3>
+                <p>Las texturas mixtas son el mayor desafío: sopa con tropezones, yogur con grumos, guisos con diferentes consistencias.</p>
+              </div>
+              <div class="sense-map__item" style="--delay: 0.3s">
+                <div class="sense-map__circle sense-map__circle--taste">👅</div>
+                <h3>Gusto</h3>
+                <p>Los sabores se experimentan con una intensidad amplificada. Lo "suave" puede percibirse como abrumadoramente fuerte.</p>
+              </div>
+              <div class="sense-map__item" style="--delay: 0.4s">
+                <div class="sense-map__circle sense-map__circle--hearing">👂</div>
+                <h3>Oído</h3>
+                <p>El crujido al masticar, el sonido del tenedor contra el plato — inputs auditivos que compiten por atención.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter__visual">
+          <div class="character-frame character-frame--float">
+            <img src="images/brain.jpg" alt="Cerebro sensorial amigable" loading="lazy">
+            <div class="character-frame__name">
+              <span class="character-frame__icon">🧠</span> Neuro
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       DIVIDER — Immersive horizontal scroll quote
+  ═══════════════════════════════════════════════ -->
+  <section class="immersive-divider">
+    <div class="immersive-divider__content">
+      <p class="immersive-divider__text">
+        "No es que no quiera comer.<br>
+        <span class="immersive-divider__text--emphasis">Es que su cuerpo le está gritando que algo no está bien.</span>"
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 3 — Hiper vs Hipo (Split screen)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--profiles" id="chapter-3">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--neutral"></div>
+      
+      <div class="chapter__full-width">
+        <span class="chapter__number">Capítulo 03</span>
+        <h2 class="chapter__title chapter__title--center">Dos perfiles, dos mundos</h2>
+        <p class="chapter__intro">Cada niño con TEA experimenta los sentidos de forma única. Estos son los dos perfiles principales:</p>
+        
+        <div class="profile-split">
+          <div class="profile-card profile-card--hyper">
+            <div class="profile-card__header">
+              <span class="profile-card__emoji">🔊</span>
+              <h3>Hipersensible</h3>
+              <p class="profile-card__subtitle">Todo se siente <em>demasiado</em></p>
+            </div>
+            <div class="profile-card__body">
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🚫</span>
+                <p>Rechaza texturas mixtas (sopa con tropezones, guisos con trozos)</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">😰</span>
+                <p>Los olores fuertes provocan arcadas antes de probar</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">👀</span>
+                <p>Un cambio mínimo en el envase o la marca del producto = rechazo total</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🎯</span>
+                <p>Necesita que el alimento se vea y sepa <strong>exactamente igual</strong> siempre</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-split__vs">
+            <span>VS</span>
+          </div>
+
+          <div class="profile-card profile-card--hypo">
+            <div class="profile-card__header">
+              <span class="profile-card__emoji">🔇</span>
+              <h3>Hiposensible</h3>
+              <p class="profile-card__subtitle">Todo se siente <em>poco</em></p>
+            </div>
+            <div class="profile-card__body">
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🌶️</span>
+                <p>Busca sabores muy fuertes: salados, ácidos o picantes</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🦷</span>
+                <p>Necesita masticar objetos duros para regular su sistema nervioso</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🍔</span>
+                <p>Introduce grandes bocados intentando "sentir más"</p>
+              </div>
+              <div class="profile-card__trait">
+                <span class="profile-card__icon">🔄</span>
+                <p>Busca estimulación intensa y constante en cada comida</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 4 — Estrategias (Chef kid)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--strategies" id="chapter-4">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--sage"></div>
+      
+      <div class="chapter__split">
+        <div class="chapter__visual">
+          <div class="character-frame character-frame--float">
+            <img src="images/chef_kid.jpg" alt="Lucas explorando alimentos" loading="lazy">
+            <div class="character-frame__name">
+              <span class="character-frame__icon">👨‍🍳</span> Lucas
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter__narrative">
+          <span class="chapter__number">Capítulo 04</span>
+          <h2 class="chapter__title">El camino de las pequeñas victorias</h2>
+          
+          <div class="narrative-block">
+            <p class="narrative-block__lead">
+              El objetivo inicial <strong>no es que el niño coma</strong>, sino que pierda el miedo al alimento. Lucas nos guía por las fases de la exposición gradual:
+            </p>
+          </div>
+
+          <div class="journey-steps">
+            <div class="journey-step">
+              <div class="journey-step__marker">
+                <span class="journey-step__number">1</span>
+                <div class="journey-step__line"></div>
+              </div>
+              <div class="journey-step__content">
+                <h3>Tolerar la presencia</h3>
+                <p>El alimento nuevo está en la mesa o en el plato de otra persona. Sin exigencias, sin presión. Solo <em>estar ahí</em>.</p>
+              </div>
+            </div>
+
+            <div class="journey-step">
+              <div class="journey-step__marker">
+                <span class="journey-step__number">2</span>
+                <div class="journey-step__line"></div>
+              </div>
+              <div class="journey-step__content">
+                <h3>Interactuar sin comer</h3>
+                <p>Tocarlo con un tenedor, olerlo, ayudar a servirlo. Incluso jugar con texturas similares fuera de la mesa — pintar con puré, moldear con masa.</p>
+              </div>
+            </div>
+
+            <div class="journey-step">
+              <div class="journey-step__marker">
+                <span class="journey-step__number">3</span>
+                <div class="journey-step__line"></div>
+              </div>
+              <div class="journey-step__content">
+                <h3>Acercar a la boca</h3>
+                <p>Dar pequeños "besos" al alimento. Tocarlo con los labios. El niño va descubriendo que tiene el control de la situación.</p>
+              </div>
+            </div>
+
+            <div class="journey-step">
+              <div class="journey-step__marker">
+                <span class="journey-step__number">4</span>
+                <div class="journey-step__line"></div>
+              </div>
+              <div class="journey-step__content">
+                <h3>Probar y decidir</h3>
+                <p>Un micromordisco con permiso para escupir en una servilleta. <strong>Él decide.</strong> Él tiene el control. Cada intento es una victoria.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="narrative-block narrative-block--callout">
+            <div class="callout callout--green">
+              <div class="callout__icon">🌉</div>
+              <div class="callout__content">
+                <p><strong>Técnica del "Alimento Puente":</strong> Si el niño solo acepta patatas fritas crujientes de una marca, introduce otro snack crujiente con forma similar. Así amplías el repertorio de forma imperceptible, usando la textura familiar como ancla.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 5 — El papel de la familia (Parents)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--family" id="chapter-5">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--warm-soft"></div>
+      
+      <div class="chapter__split chapter__split--reverse">
+        <div class="chapter__narrative">
+          <span class="chapter__number">Capítulo 05</span>
+          <h2 class="chapter__title">El entorno que sana</h2>
+          
+          <div class="narrative-block">
+            <p class="narrative-block__lead">
+              La hora de comer no debería ser un campo de batalla. Estas claves ayudan a transformar la mesa en un espacio seguro:
+            </p>
+          </div>
+
+          <div class="strategy-cards">
+            <div class="strategy-card">
+              <div class="strategy-card__header">
+                <span class="strategy-card__icon">📋</span>
+                <h3>Agendas visuales</h3>
+              </div>
+              <p>Usa pictogramas o fotos para anticipar qué se va a comer. La predictibilidad reduce la ansiedad antes de sentarse a la mesa.</p>
+            </div>
+
+            <div class="strategy-card">
+              <div class="strategy-card__header">
+                <span class="strategy-card__icon">🔇</span>
+                <h3>Ambiente neutro</h3>
+              </div>
+              <p>Reduce ruidos molestos, apaga pantallas y mantén una iluminación suave. Menos estímulos = más capacidad de atención al cuerpo.</p>
+            </div>
+
+            <div class="strategy-card">
+              <div class="strategy-card__header">
+                <span class="strategy-card__icon">🍽️</span>
+                <h3>Menaje consistente</h3>
+              </div>
+              <p>Los mismos platos, vasos y cubiertos. La familiaridad del utensilio es un ancla de seguridad para muchos niños con TEA.</p>
+            </div>
+
+            <div class="strategy-card">
+              <div class="strategy-card__header">
+                <span class="strategy-card__icon">🧘</span>
+                <h3>Regulación previa</h3>
+              </div>
+              <p>Actividades de presión profunda o juego sensorial unos minutos antes de comer. El sistema nervioso necesita llegar en calma a la mesa.</p>
+            </div>
+          </div>
+
+          <div class="narrative-block narrative-block--quote">
+            <blockquote>
+              "No es culpa tuya. No es culpa de tu hijo. Es un cerebro que procesa el mundo de forma diferente, y necesita que le ayudemos a encontrar su camino."
+            </blockquote>
+          </div>
+        </div>
+
+        <div class="chapter__visual">
+          <div class="character-frame character-frame--float">
+            <img src="images/parents.jpg" alt="Padres informándose juntos" loading="lazy">
+            <div class="character-frame__name">
+              <span class="character-frame__icon">💕</span> Ana y Carlos
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 6 — Profesionales (Therapist + Teacher)
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--professionals" id="chapter-6">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--mint"></div>
+      
+      <div class="chapter__full-width">
+        <span class="chapter__number">Capítulo 06</span>
+        <h2 class="chapter__title chapter__title--center">¿Cuándo pedir ayuda profesional?</h2>
+        <p class="chapter__intro">Busca apoyo especializado si observas estas señales:</p>
+
+        <div class="alert-signs">
+          <div class="alert-sign">
+            <span class="alert-sign__icon">⚖️</span>
+            <p>Pérdida de peso o estancamiento en el crecimiento</p>
+          </div>
+          <div class="alert-sign">
+            <span class="alert-sign__icon">😱</span>
+            <p>Ansiedad extrema al sentarse a la mesa</p>
+          </div>
+          <div class="alert-sign">
+            <span class="alert-sign__icon">🚫</span>
+            <p>Eliminación de grupos enteros de alimentos</p>
+          </div>
+          <div class="alert-sign">
+            <span class="alert-sign__icon">💔</span>
+            <p>Las comidas se han convertido en fuente constante de estrés familiar</p>
+          </div>
+        </div>
+
+        <h3 class="chapter__subtitle">El equipo ideal</h3>
+        
+        <div class="team-grid">
+          <div class="team-member">
+            <div class="team-member__image">
+              <img src="images/therapist.jpg" alt="Terapeuta Ocupacional" loading="lazy">
+            </div>
+            <div class="team-member__info">
+              <h4>Terapeuta Ocupacional</h4>
+              <p class="team-member__specialty">Integración Sensorial</p>
+              <p>Evalúa y trata las disfunciones en el procesamiento táctil, gustativo y olfativo. Es quien "traduce" lo que el cuerpo del niño está comunicando.</p>
+            </div>
+          </div>
+
+          <div class="team-member">
+            <div class="team-member__image">
+              <img src="images/teacher.jpg" alt="Logopeda" loading="lazy">
+            </div>
+            <div class="team-member__info">
+              <h4>Logopeda</h4>
+              <p class="team-member__specialty">Terapia de alimentación</p>
+              <p>Trabaja las habilidades motoras orales, la masticación y la tolerancia de texturas intraorales de forma gradual y respetuosa.</p>
+            </div>
+          </div>
+
+          <div class="team-member">
+            <div class="team-member__image">
+              <img src="images/hero_table.jpg" alt="Nutricionista" loading="lazy">
+            </div>
+            <div class="team-member__info">
+              <h4>Nutricionista Pediátrico</h4>
+              <p class="team-member__specialty">Dieta equilibrada</p>
+              <p>Asegura que no existan carencias nutricionales importantes mientras se amplía la dieta de forma respetuosa y sin prisas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       CHAPTER 7 — Recursos y cierre
+  ═══════════════════════════════════════════════ -->
+  <section class="chapter chapter--resources" id="chapter-7">
+    <div class="chapter__sticky-scene">
+      <div class="chapter__bg-wash chapter__bg-wash--warm-deep"></div>
+      
+      <div class="chapter__full-width chapter__full-width--closing">
+        <span class="chapter__number">Capítulo 07</span>
+        <h2 class="chapter__title chapter__title--center">Recursos y caminos por explorar</h2>
+        
+        <div class="resource-flow">
+          <div class="resource-item">
+            <span class="resource-item__icon">📚</span>
+            <h3>Lectura recomendada</h3>
+            <p>"Just Take a Bite" — Lori Ernsperger & Tania Stegen-Hanson</p>
+            <p>"Food Chaining" — Cheri Fraker et al.</p>
+          </div>
+          <div class="resource-item">
+            <span class="resource-item__icon">🏥</span>
+            <h3>Busca en tu zona</h3>
+            <p>Centros de Atención Temprana con especialistas en integración sensorial y alimentación</p>
+          </div>
+          <div class="resource-item">
+            <span class="resource-item__icon">🤝</span>
+            <h3>Comunidades</h3>
+            <p>Fundación ConecTEA, asociaciones locales de familias TEA, grupos de apoyo entre padres</p>
+          </div>
+          <div class="resource-item">
+            <span class="resource-item__icon">📱</span>
+            <h3>Herramientas digitales</h3>
+            <p>Apps de agendas visuales, pictogramas para anticipar comidas, diarios de alimentación</p>
+          </div>
+        </div>
+
+        <div class="closing-message">
+          <div class="closing-message__character">
+            <img src="images/cover.png" alt="Mía" loading="lazy">
+          </div>
+          <div class="closing-message__text">
+            <h2>Cada pequeño paso cuenta</h2>
+            <p>
+              Si Mía hoy tocó un brócoli con el dedo, eso es un logro enorme.
+              Si mañana lo acerca a su nariz, es otro paso gigante.
+              Y si la semana que viene lo pone en su plato sin llorar...
+              <strong>eso es una revolución silenciosa que merece ser celebrada.</strong>
+            </p>
+            <p class="closing-message__sign">
+              Con amor y ciencia, para todas las familias que acompañan este camino. 🌈
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p class="site-footer__title">El Autismo Sobre La Mesa</p>
+      <p class="site-footer__subtitle">Una guía visual para familias, educadores y profesionales de la salud.</p>
+      <div class="site-footer__credits">
+        <p>Basado en investigación de la Fundación ConecTEA, TDAH-TEA.org y fuentes clínicas especializadas.</p>
+        <p>Ilustraciones generadas con IA para fines educativos. Diseño editorial scrollytelling.</p>
+      </div>
+      <p class="site-footer__copy">© 2026 — Hecho con 💚 para quienes necesitan entender.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
