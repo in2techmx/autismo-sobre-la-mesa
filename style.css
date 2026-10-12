@@ -672,6 +672,274 @@ a {
 }
 
 
+/* ═══════════════════════════════════════════════
+   LIBRO / DIARIO INTERACTIVO TFM (Flipbook style)
+═══════════════════════════════════════════════ */
+.tfm-book-container {
+  margin: var(--space-xl) 0 var(--space-md);
+  perspective: 1200px;
+}
+
+.tfm-book-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+  font-family: var(--ff-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--wood-dark);
+}
+
+.tfm-book-hint {
+  font-family: var(--ff-handwritten);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--sage-dark);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.tfm-book {
+  position: relative;
+  min-height: 420px;
+  background: #FCF8F2;
+  border-radius: 12px 24px 24px 12px;
+  box-shadow: 
+    -12px 0 20px -8px rgba(90, 70, 50, 0.35),
+    0 18px 45px rgba(0, 0, 0, 0.12),
+    inset 28px 0 24px -14px rgba(166, 124, 82, 0.28),
+    inset 0 0 0 1px rgba(166, 124, 82, 0.2);
+  overflow: hidden;
+  border: 1px solid rgba(166, 124, 82, 0.25);
+}
+
+.tfm-book::before {
+  /* Lomo del libro / Encuadernación con costura */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 28px;
+  background: linear-gradient(90deg, 
+    #7A5A3A 0%, 
+    #A67C52 40%, 
+    #5C4126 85%, 
+    rgba(92, 65, 38, 0.1) 100%);
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+}
+
+.tfm-page {
+  position: absolute;
+  inset: 0;
+  padding: 2.2rem 2.2rem 2.2rem 3.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotateY(-18deg) scale(0.97);
+  transform-origin: left center;
+  transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  background: radial-gradient(circle at 90% 10%, rgba(245, 235, 219, 0.8), transparent 70%), #FCF8F2;
+  z-index: 1;
+}
+
+.tfm-page.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: rotateY(0deg) scale(1);
+  z-index: 10;
+}
+
+.tfm-page__ribbon {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--ff-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--sage-dark);
+  background: rgba(143, 174, 132, 0.18);
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+}
+
+.tfm-page__title {
+  font-family: var(--ff-display);
+  font-size: clamp(1.3rem, 2.8vw, 1.7rem);
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+}
+
+.tfm-page__lead {
+  font-size: 0.95rem;
+  color: var(--wood-dark);
+  line-height: 1.5;
+  margin-bottom: 0.8rem;
+}
+
+.tfm-page__text {
+  font-size: 0.92rem;
+  color: var(--charcoal);
+  line-height: 1.65;
+  flex-grow: 1;
+}
+
+.tfm-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tfm-pill {
+  font-family: var(--ff-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--charcoal-soft);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(166, 124, 82, 0.2);
+  padding: 0.3rem 0.75rem;
+  border-radius: 100px;
+}
+
+.tfm-bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0;
+  margin: 0.4rem 0;
+}
+
+.tfm-bullet-list li {
+  position: relative;
+  padding-left: 1.2rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.tfm-bullet-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--sage-dark);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.tfm-strategy-box {
+  background: rgba(255, 255, 255, 0.7);
+  border-left: 3px solid var(--sage);
+  padding: 0.6rem 0.8rem;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 0.6rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.tfm-highlight {
+  background: rgba(232, 196, 104, 0.18);
+  border-left: 3px solid var(--honey);
+  padding: 0.7rem 0.9rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+}
+
+.tfm-page__footer-note {
+  border-top: 1px dashed rgba(166, 124, 82, 0.25);
+  padding-top: 0.6rem;
+  margin-top: 0.8rem;
+  font-family: var(--ff-handwritten);
+  font-size: 1.05rem;
+  color: var(--wood-dark);
+}
+
+/* NAVEGACIÓN DEL LIBRO */
+.tfm-book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.9rem;
+  padding: 0 0.5rem;
+}
+
+.tfm-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #FFFFFF;
+  border: 1px solid rgba(166, 124, 82, 0.3);
+  color: var(--charcoal);
+  padding: 0.55rem 1.1rem;
+  border-radius: 100px;
+  font-family: var(--ff-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.tfm-nav-btn:hover:not(:disabled) {
+  background: var(--sage-light);
+  color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(143, 174, 132, 0.25);
+}
+
+.tfm-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.tfm-nav-indicator {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tfm-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--wood);
+  opacity: 0.3;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tfm-dot.active {
+  opacity: 1;
+  background: var(--sage-dark);
+  transform: scale(1.3);
+}
+
+@media (max-width: 600px) {
+  .tfm-book {
+    min-height: 480px;
+  }
+  .tfm-page {
+    padding: 1.8rem 1.4rem 1.8rem 2.8rem;
+  }
+}
+
+
 /* ─── SENSE MAP (Chapter 2 circle layout) ─── */
 .sense-map {
   display: grid;

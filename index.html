@@ -164,6 +164,118 @@
               </div>
             </div>
           </div>
+
+          <!-- ═══════════════════════════════════════════════
+               CUADERNO / LIBRO INTERACTIVO DEL ESTUDIO TFM
+          ═══════════════════════════════════════════════ -->
+          <div class="narrative-block">
+            <div class="tfm-book-container">
+              <div class="tfm-book-badge">
+                <span>📖 Diario de Investigación & Recomendaciones</span>
+                <span class="tfm-book-hint">Pasa las páginas con las flechas o botones</span>
+              </div>
+
+              <div class="tfm-book" id="tfmBook">
+                <!-- PÁGINA 1: Portada & Contexto del Estudio -->
+                <article class="tfm-page active" data-page="1">
+                  <div class="tfm-page__ribbon">Página 1 de 4 • El Estudio</div>
+                  <h3 class="tfm-page__title">Fundamento Científico del TFM</h3>
+                  <p class="tfm-page__lead">
+                    Investigación de <strong>Mtra. Maria Cindy Morales Alarcón</strong> (Máster Univ. en Nutrición y Alimentación, Curso 2025-2026).
+                  </p>
+                  <div class="tfm-page__text">
+                    <p>Revisión narrativa rigurosa en <em>Scopus</em>, <em>Web of Science</em> y <em>FSTA</em> que sintetiza la evidencia clínica sobre selectividad alimentaria en escolares con TEA.</p>
+                    <div class="tfm-pill-list">
+                      <span class="tfm-pill">🔍 Multidimensional</span>
+                      <span class="tfm-pill">📊 Más allá del peso corporal</span>
+                      <span class="tfm-pill">🧠 Neurodesarrollo</span>
+                    </div>
+                  </div>
+                  <div class="tfm-page__footer-note">
+                    <em>"No es falta de voluntad: es una experiencia corporal y sensorial compleja."</em>
+                  </div>
+                </article>
+
+                <!-- PÁGINA 2: Hallazgos Clave -->
+                <article class="tfm-page" data-page="2">
+                  <div class="tfm-page__ribbon">Página 2 de 4 • Diagnóstico Integral</div>
+                  <h3 class="tfm-page__title">¿Qué revela la evidencia?</h3>
+                  <div class="tfm-page__text">
+                    <ul class="tfm-bullet-list">
+                      <li>
+                        <strong>Percepción sensorial crítica:</strong> Textura, sabor, temperatura y olor son los detonantes primarios de rechazo o evitación.
+                      </li>
+                      <li>
+                        <strong>Inflexibilidad cognitiva:</strong> Necesidad imperiosa de anticipación, ritualización y estabilidad visual de los envases.
+                      </li>
+                      <li>
+                        <strong>Impacto gastrointestinal:</strong> Coexistencia frecuente de molestias digestivas que agravan la aversión a la comida.
+                      </li>
+                      <li>
+                        <strong>El mito del peso:</strong> Un peso aparentemente normal no garantiza un aporte adecuado de micronutrientes.
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="tfm-page__footer-note">
+                    <em>La evaluación debe ser individualizada y nunca generalista.</em>
+                  </div>
+                </article>
+
+                <!-- PÁGINA 3: Recomendaciones Prácticas -->
+                <article class="tfm-page" data-page="3">
+                  <div class="tfm-page__ribbon">Página 3 de 4 • Recomendaciones</div>
+                  <h3 class="tfm-page__title">Estrategias en Casa y Escuela</h3>
+                  <div class="tfm-page__text">
+                    <div class="tfm-strategy-box">
+                      <strong>1. Cero coacción ni castigos:</strong> Las prácticas coercitivas incrementan el estrés fisiológico y consolidan el rechazo.
+                    </div>
+                    <div class="tfm-strategy-box">
+                      <strong>2. Desensibilización y encadenamiento:</strong> Exposición progresiva (tolerar presencia → interactuar → aproximar → catar sin tragar forzado).
+                    </div>
+                    <div class="tfm-strategy-box">
+                      <strong>3. Adaptación ambiental:</strong> Cuidar ruidos, olores intensos en cocina y mantener menaje y horarios predecibles.
+                    </div>
+                  </div>
+                  <div class="tfm-page__footer-note">
+                    <em>Favorecer una participación gradual y autónoma.</em>
+                  </div>
+                </article>
+
+                <!-- PÁGINA 4: El Vínculo y la Transferencia -->
+                <article class="tfm-page" data-page="4">
+                  <div class="tfm-page__ribbon">Página 4 de 4 • Coordinación & Conclusión</div>
+                  <h3 class="tfm-page__title">Red de Apoyo y Transferencia</h3>
+                  <div class="tfm-page__text">
+                    <p>
+                      El TFM concluye que la solución <strong>no recae en el niño ni exclusivamente en su familia</strong>: requiere coordinación estrecha entre terapeutas ocupacionales, pediatras, nutricionistas y el comedor escolar.
+                    </p>
+                    <p class="tfm-highlight">
+                      Esta guía educativa <em>«El Autismo Sobre La Mesa»</em> nació como herramienta de transferencia para transformar la ciencia en comprensión diaria y amorosa.
+                    </p>
+                  </div>
+                  <div class="tfm-page__footer-note">
+                    <em>Dedicado con amor a Aurora y a todas las familias TEA.</em>
+                  </div>
+                </article>
+              </div>
+
+              <!-- CONTROLES DE NAVEGACIÓN TIPO REVISTA / LIBRO -->
+              <div class="tfm-book-nav">
+                <button type="button" class="tfm-nav-btn" id="tfmPrevBtn" aria-label="Página anterior" disabled>
+                  <span>‹</span> Anterior
+                </button>
+                <div class="tfm-nav-indicator" id="tfmNavIndicator">
+                  <span class="tfm-dot active" data-page="1"></span>
+                  <span class="tfm-dot" data-page="2"></span>
+                  <span class="tfm-dot" data-page="3"></span>
+                  <span class="tfm-dot" data-page="4"></span>
+                </div>
+                <button type="button" class="tfm-nav-btn" id="tfmNextBtn" aria-label="Siguiente página">
+                  Siguiente <span>›</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

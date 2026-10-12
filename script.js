@@ -165,4 +165,82 @@
     });
   });
 
+  /* ─── 8. CUADERNO / LIBRO INTERACTIVO TFM (Flipbook) ─── */
+  const tfmPages = document.querySelectorAll('.tfm-page');
+  const tfmDots = document.querySelectorAll('.tfm-dot');
+  const tfmPrevBtn = document.getElementById('tfmPrevBtn');
+  const tfmNextBtn = document.getElementById('tfmNextBtn');
+  let currentTfmPage = 1;
+  const totalTfmPages = tfmPages.length;
+
+  function showTfmPage(pageNum) {
+    if (pageNum < 1 || pageNum > totalTfmPages) return;
+    currentTfmPage = pageNum;
+
+    tfmPages.forEach(function (page) {
+      const p = parseInt(page.getAttribute('data-page'), 10);
+      if (p === currentTfmPage) {
+        page.classList.add('active');
+      } else {
+        page.classList.remove('active');
+      }
+    });
+
+    tfmDots.forEach(function (dot) {
+      const p = parseInt(dot.getAttribute('data-page'), 10);
+      if (p === currentTfmPage) {
+        dot.classList.add('active');
+      } else {
+        dot.classList.remove('active');
+      }
+    });
+
+    if (tfmPrevBtn) tfmPrevBtn.disabled = currentTfmPage === 1;
+    if (tfmNextBtn) tfmNextBtn.disabled = currentTfmPage === totalTfmPages;
+  }
+
+  if (tfmPrevBtn) {
+    tfmPrevBtn.addEventListener('click', function () {
+      showTfmPage(currentTfmPage - 1);
+    });
+  }
+
+  if (tfmNextBtn) {
+    tfmNextBtn.addEventListener('click', function () {
+      showTfmPage(currentTfmPage + 1);
+    });
+  }
+
+  tfmDots.forEach(function (dot) {
+    dot.addEventListener('click', function () {
+      const page = parseInt(this.getAttribute('data-page'), 10);
+      showTfmPage(page);
+    });
+  });
+
+  // Soporte de swipe táctil para móviles en el libro
+  const tfmBook = document.getElementById('tfmBook');
+  if (tfmBook) {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    tfmBook.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    tfmBook.addEventListener('touchend', function (e) {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 40) {
+        if (diff > 0) {
+          // Swipe a la izquierda -> siguiente
+          showTfmPage(currentTfmPage + 1);
+        } else {
+          // Swipe a la derecha -> anterior
+          showTfmPage(currentTfmPage - 1);
+        }
+      }
+    }, { passive: true });
+  }
+
 })();
